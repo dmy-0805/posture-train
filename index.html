@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>体态训练台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f0f0f2;--card:#fff;--text:#1a1a1a;--text-2:#666;--text-3:#999;
+  --border:#e8e8e8;--border-2:#d8d8d8;--primary:#1a1a1a;--primary-hover:#333;
+  --danger:#e74c3c;--danger-bg:#fef2f2;--success:#22c55e;--warn:#f59e0b;
+  --radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;
+  -webkit-font-smoothing:antialiased;
+}
+#app{max-width:680px;margin:0 auto;padding:16px;padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.header-actions{display:flex;gap:8px}
+.icon-btn{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--text-2);transition:all .15s;min-width:36px;min-height:36px;
+}
+.icon-btn:hover{background:var(--bg);color:var(--text)}
+.today-section{
+  background:var(--card);border-radius:var(--radius);padding:16px;
+  margin-bottom:16px;box-shadow:var(--shadow);
+  border-left:3px solid var(--primary);
+}
+.today-section h2{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.today-empty{color:var(--text-3);font-size:14px;text-align:center;padding:12px 0}
+.reminder{
+  background:#fffbe6;border:1px solid #ffe58f;border-radius:var(--radius-sm);
+  padding:10px 12px;margin-bottom:16px;font-size:13px;color:#936f00;
+  display:flex;align-items:center;gap:8px;
+}
+.reminder.hidden{display:none}
+.tabs{
+  display:flex;gap:4px;background:var(--card);border-radius:var(--radius);
+  padding:4px;margin-bottom:16px;box-shadow:var(--shadow);position:sticky;top:8px;z-index:10;
+}
+.tab{
+  flex:1;background:transparent;border:none;padding:10px;border-radius:var(--radius-sm);
+  font-size:14px;font-weight:500;color:var(--text-2);cursor:pointer;
+  transition:all .15s;font-family:inherit;
+}
+.tab.active{background:var(--primary);color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{
+  background:var(--card);border-radius:var(--radius);padding:16px;
+  margin-bottom:16px;box-shadow:var(--shadow);
+}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:13px;color:var(--text-2);margin-bottom:4px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:16px;font-family:inherit;background:#fff;color:var(--text);outline:none;
+  transition:border-color .15s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary)}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.bf-mode-tabs{display:flex;gap:4px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;margin:12px 0}
+.bf-mode-tab{flex:1;background:transparent;border:none;padding:8px 4px;border-radius:6px;font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;transition:all .15s;font-family:inherit}
+.bf-mode-tab.active{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.bf-mode-content{display:none}
+.bf-mode-content.active{display:block}
+.bf-calc-result{background:var(--bg);border-radius:var(--radius-sm);padding:14px;text-align:center;font-size:13px;color:var(--text-3);margin-top:8px;transition:all .2s}
+.bf-calc-result.has-value{background:#f0fdf4;border:1px solid #bbf7d0}
+.bf-calc-result .bf-value{font-size:28px;font-weight:700;color:var(--text);display:block;margin-top:4px}
+.bf-calc-result .bf-label{font-size:12px;color:#15803d;margin-top:2px;display:block}
+.body-detail-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.body-tag{background:var(--bg);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--text-3)}
+.body-tag.calc{color:#15803d;background:#f0fdf4}
+.intensity-picker{display:flex;gap:6px}
+.intensity-btn{
+  flex:1;padding:8px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  background:#fff;cursor:pointer;font-size:12px;text-align:center;transition:all .15s;
+  color:var(--text-2);font-family:inherit;
+}
+.intensity-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 16px;border:none;border-radius:var(--radius-sm);font-size:14px;
+  font-weight:500;cursor:pointer;transition:all .15s;font-family:inherit;min-height:44px;
+}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-outline{background:#fff;color:var(--text);border:1px solid var(--border-2)}
+.btn-outline:hover{background:var(--bg)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-block{width:100%}
+.btn-sm{padding:6px 10px;font-size:13px;min-height:32px}
+.exercise-section{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+.exercise-toggle{
+  display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:14px;
+  cursor:pointer;user-select:none;
+}
+.exercise-toggle .arrow{transition:transform .2s}
+.exercise-toggle.open .arrow{transform:rotate(90deg)}
+.exercise-body{display:none;margin-top:12px}
+.exercise-body.open{display:block}
+.exercise-row{display:flex;gap:6px;margin-bottom:8px;align-items:center}
+.exercise-row input{
+  padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px;
+  font-family:inherit;outline:none;
+}
+.exercise-row input:focus{border-color:var(--primary)}
+.exercise-row .ex-name{flex:2;min-width:0}
+.exercise-row .ex-sets{flex:1;min-width:50px}
+.exercise-row .ex-reps{flex:1.5;min-width:60px}
+.exercise-row .ex-weight{flex:1;min-width:50px}
+.exercise-row .ex-del{
+  background:transparent;border:none;color:var(--danger);cursor:pointer;
+  padding:4px;display:flex;align-items:center;flex-shrink:0;
+}
+.exercise-add{
+  display:inline-flex;align-items:center;gap:4px;color:var(--text-2);font-size:13px;
+  cursor:pointer;background:none;border:1px dashed var(--border-2);border-radius:6px;
+  padding:6px 10px;font-family:inherit;
+}
+.exercise-add:hover{background:var(--bg)}
+.record-item{
+  background:var(--card);border-radius:var(--radius);padding:14px;
+  margin-bottom:12px;box-shadow:var(--shadow);
+}
+.record-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.record-item-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.record-type-tag{
+  background:var(--bg);border:1px solid var(--border);border-radius:4px;
+  padding:2px 8px;font-size:12px;color:var(--text-2);
+}
+.record-date{font-size:12px;color:var(--text-3)}
+.record-meta{display:flex;gap:16px;font-size:13px;color:var(--text-2);margin-bottom:8px;flex-wrap:wrap}
+.record-meta-item{display:flex;align-items:center;gap:4px}
+.intensity-display{display:inline-flex;gap:3px;align-items:center}
+.intensity-dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.intensity-dot.active{background:var(--primary)}
+.record-note{
+  font-size:13px;color:var(--text-2);background:var(--bg);
+  padding:8px 10px;border-radius:6px;margin-top:8px;
+}
+.record-exercises{margin-top:8px}
+.record-exercises summary{cursor:pointer;color:var(--text-2);font-size:13px;font-weight:500}
+.exercise-detail{
+  display:flex;justify-content:space-between;padding:6px 0;
+  border-bottom:1px solid var(--border);font-size:13px;color:var(--text-2);
+}
+.exercise-detail:last-child{border-bottom:none}
+.record-del{
+  background:transparent;border:none;color:var(--text-3);cursor:pointer;
+  padding:4px;display:flex;align-items:center;font-size:12px;font-family:inherit;
+}
+.record-del:hover{color:var(--danger)}
+.body-chart{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--shadow)}
+.chart-legend{display:flex;gap:16px;margin-bottom:8px;font-size:13px}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-line{width:16px;height:3px;border-radius:2px}
+.legend-line.solid{background:var(--primary)}
+.legend-line.dashed{background:repeating-linear-gradient(90deg,#999 0,#999 4px,transparent 4px,transparent 7px)}
+.body-stats{display:flex;gap:12px;margin-bottom:16px}
+.stat-card{flex:1;background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);text-align:center}
+.stat-value{font-size:24px;font-weight:700}
+.stat-label{font-size:12px;color:var(--text-3);margin-top:2px}
+.stat-change{font-size:12px;margin-top:4px}
+.stat-change.up{color:var(--danger)}
+.stat-change.down{color:var(--success)}
+.stat-change.flat{color:var(--text-3)}
+.footer-section{margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.danger-zone{background:var(--danger-bg);border:1px solid #fcc;border-radius:var(--radius);padding:14px}
+.danger-zone h3{font-size:14px;color:var(--danger);margin-bottom:8px}
+.danger-zone p{font-size:13px;color:var(--text-2);margin-bottom:12px}
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;
+  align-items:center;justify-content:center;z-index:1000;padding:20px;
+}
+.modal-overlay.hidden{display:none}
+.modal{background:#fff;border-radius:var(--radius);padding:20px;max-width:360px;width:100%}
+.modal h3{font-size:16px;margin-bottom:8px}
+.modal p{font-size:14px;color:var(--text-2);margin-bottom:16px}
+.modal-actions{display:flex;gap:12px}
+.modal-actions .btn{flex:1}
+.toast{
+  position:fixed;bottom:40px;left:50%;transform:translateX(-50%);
+  background:var(--primary);color:#fff;padding:10px 20px;border-radius:20px;
+  font-size:14px;z-index:2000;opacity:0;transition:opacity .2s;pointer-events:none;
+}
+.toast.show{opacity:1}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-3);font-size:14px}
+.section-title{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.type-manage{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:8px;
+  background:var(--bg);border-radius:var(--radius-sm);
+}
+.type-chip{
+  display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--border);
+  border-radius:4px;padding:4px 8px;font-size:12px;color:var(--text-2);
+}
+.type-chip .remove{cursor:pointer;color:var(--text-3);font-size:14px;line-height:1}
+.type-chip .remove:hover{color:var(--danger)}
+.type-add{
+  display:inline-flex;align-items:center;gap:4px;background:none;border:1px dashed var(--border-2);
+  border-radius:4px;padding:4px 8px;font-size:12px;color:var(--text-3);cursor:pointer;font-family:inherit;
+}
+/* 训练计划 */
+.plan-day{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:2px solid transparent;transition:border-color .2s}
+.plan-day.today{border-color:var(--primary)}
+.plan-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.plan-day-label{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.day-badge{background:var(--bg);border-radius:6px;padding:3px 10px;font-size:13px;font-weight:600;color:var(--text-2);white-space:nowrap;flex-shrink:0}
+.plan-day.today .day-badge{background:var(--primary);color:#fff}
+.plan-day-title{font-weight:600;font-size:15px}
+.plan-duration{font-size:12px;color:var(--text-3);white-space:nowrap}
+.plan-video-info{font-size:12px;color:var(--text-3);margin:8px 0;line-height:1.5}
+.plan-video-wrapper{display:block;text-decoration:none;position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--radius-sm);overflow:hidden;margin:8px 0;background:#1a1a1a;cursor:pointer}
+.plan-video-cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);transition:background .2s}
+.plan-video-cover:hover{background:linear-gradient(135deg,#222,#3a3a3a)}
+.plan-video-cover .play-circle{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
+.plan-video-cover:hover .play-circle{transform:scale(1.1);background:#fff}
+.plan-video-cover .play-circle svg{margin-left:3px}
+.plan-video-cover .cover-text{color:rgba(255,255,255,.7);font-size:12px;text-align:center;padding:0 16px;line-height:1.4}
+.plan-video-cover.hidden{display:none}
+.plan-exercises{margin:10px 0}
+.plan-exercise-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px}
+.plan-exercise-item:last-child{border-bottom:none}
+.plan-exercise-name{font-weight:500;flex-shrink:0}
+.plan-exercise-detail{color:var(--text-2);text-align:right;font-size:13px}
+.plan-focus{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;color:#92400e;display:flex;align-items:flex-start;gap:6px;margin-top:8px}
+.plan-focus:empty{display:none}
+.plan-rest{color:var(--text-3);font-size:14px;padding:4px 0}
+.habits-section{background:var(--card);border-radius:var(--radius);padding:16px;margin-top:16px;box-shadow:var(--shadow)}
+.habits-list{list-style:none;margin-top:10px}
+.habits-list li{padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-2);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.habits-list li:last-child{border-bottom:none}
+.habits-num{background:var(--primary);color:#fff;border-radius:50%;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.today-plan-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:8px;background:#f5f5f5;border:1px solid var(--border)}
+.today-plan-day{background:var(--primary);color:#fff;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600;flex-shrink:0}
+.today-plan-info{flex:1;min-width:0}
+.today-plan-title{font-weight:600;font-size:14px}
+.today-plan-meta{font-size:12px;color:var(--text-3)}
+.today-plan-actions{display:flex;gap:6px;flex-shrink:0}
+.plan-action-btn{border:none;border-radius:6px;padding:8px 12px;font-size:12px;cursor:pointer;font-family:inherit;min-height:36px;white-space:nowrap}
+.plan-action-btn.video{background:var(--primary);color:#fff}
+.plan-action-btn.detail{background:#fff;color:var(--text-2);border:1px solid var(--border)}
+@media(max-width:480px){
+  #app{padding:12px}
+  .header h1{font-size:20px}
+  .exercise-row{flex-wrap:wrap}
+  .exercise-row .ex-name{flex:1 1 100%}
+  .exercise-row .ex-sets,.exercise-row .ex-reps,.exercise-row .ex-weight{flex:1}
+  .body-stats{flex-direction:row}
+  .stat-value{font-size:20px}
+  .tab{font-size:13px;padding:8px 4px}
+  .plan-day-title{font-size:14px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- 顶部栏 -->
+  <div class="header">
+    <h1>体态训练台</h1>
+    <div class="header-actions">
+      <button class="icon-btn" id="exportBtn" title="导出备份">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="icon-btn" id="importBtn" title="导入恢复">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <input type="file" id="importFile" accept=".json" hidden>
+    </div>
+  </div>
+
+  <!-- 数据量提醒 -->
+  <div id="backupReminder" class="reminder hidden">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span id="reminderText"></span>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="plan">训练计划</button>
+    <button class="tab" data-tab="body">身体数据</button>
+  </nav>
+
+  <!-- 训练计划 -->
+  <section id="planTab" class="tab-content active">
+    <!-- 今天要处理 -->
+    <div class="today-section">
+      <h2>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        今天要处理
+      </h2>
+      <div id="todayList"></div>
+    </div>
+
+    <div id="planList"></div>
+    <div class="habits-section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><polyline points="12 6 12 12 16 14"/></svg>
+        日常体态必改习惯（比训练还重要）
+      </div>
+      <ul class="habits-list" id="habitsList"></ul>
+    </div>
+  </section>
+
+  <!-- 身体数据 -->
+  <section id="bodyTab" class="tab-content">
+    <div class="card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        记录身体数据
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>性别</label>
+          <select id="bodyGender">
+            <option value="female">女</option>
+            <option value="male">男</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>身高（cm）</label>
+          <input type="number" id="bodyHeight" placeholder="如 165" step="0.1" min="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>日期</label>
+        <input type="date" id="bodyDate">
+      </div>
+      <div class="form-group">
+        <label>体重（kg）</label>
+        <input type="number" id="bodyWeight" placeholder="如 65.2" step="0.1" min="0">
+      </div>
+      <div class="bf-mode-tabs">
+        <button type="button" class="bf-mode-tab active" data-mode="manual">手动输入体脂率</button>
+        <button type="button" class="bf-mode-tab" data-mode="calc">围度计算体脂率</button>
+      </div>
+      <div class="bf-mode-content active" id="bfManualMode">
+        <div class="form-group">
+          <label>体脂率（%）</label>
+          <input type="number" id="bodyFat" placeholder="如 22.5" step="0.1" min="0" max="100">
+        </div>
+      </div>
+      <div class="bf-mode-content" id="bfCalcMode">
+        <div class="form-row">
+          <div class="form-group">
+            <label>颈围（cm）</label>
+            <input type="number" id="bodyNeck" placeholder="如 32" step="0.1" min="0">
+          </div>
+          <div class="form-group">
+            <label>腰围（cm）</label>
+            <input type="number" id="bodyWaist" placeholder="如 68" step="0.1" min="0">
+          </div>
+        </div>
+        <div class="form-group" id="hipGroup">
+          <label>臀围（cm）</label>
+          <input type="number" id="bodyHip" placeholder="如 90" step="0.1" min="0">
+        </div>
+        <div class="bf-calc-result" id="bfCalcResult">填写身高、颈围、腰围后自动计算</div>
+      </div>
+      <button class="btn btn-primary btn-block" id="bodySubmit">保存数据</button>
+    </div>
+    <div class="body-stats" id="bodyStats"></div>
+    <div class="body-chart">
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-line solid"></span>体重 (kg)</div>
+        <div class="legend-item"><span class="legend-line dashed"></span>体脂率 (%)</div>
+      </div>
+      <div id="chartContainer"></div>
+    </div>
+    <div id="bodyList"></div>
+  </section>
+
+  <!-- 底部设置 -->
+  <div class="footer-section">
+    <div class="card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        运动类型管理
+      </div>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:8px">添加或删除运动类型，记录时可直接选择</p>
+      <div class="type-manage" id="typeManage"></div>
+    </div>
+    <div class="danger-zone">
+      <h3>危险区域</h3>
+      <p>清空所有数据（训练记录、打卡任务、身体数据），此操作不可恢复，请先导出备份。</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" id="clearSampleBtn">清空示例数据</button>
+        <button class="btn btn-danger btn-sm" id="clearAllBtn">清空全部数据</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 确认弹窗 -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">确认</h3>
+    <p id="modalMsg">确定要执行此操作吗？</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="modalCancel">取消</button>
+      <button class="btn btn-danger" id="modalConfirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const WEEKLY_PLAN = [
+  {day:1,dayName:'周一',title:'肩颈矫正 + 改善高低溜肩',duration:'20min',
+   videoTitle:'20 分钟上半身姿态改善｜薄背开肩、改善圆肩溜肩高低肩、缓解肩颈酸痛',
+   bvid:'BV1uSTM64EsE',
+   exercises:[
+     {name:'靠墙站立收下巴',detail:'3min'},
+     {name:'门框胸大肌拉伸',detail:'左右 30s×2'},
+     {name:'墙壁天使',detail:'15 次×3（高低肩弱侧多加控制）'},
+     {name:'沉肩夹背',detail:'20 次×3'},
+     {name:'颈椎侧拉伸',detail:'左右 30s'}
+   ],
+   focus:'高侧肩膀主动下沉，不要耸肩。'},
+  {day:2,dayName:'周二',title:'O 型腿 + 假胯宽矫正',duration:'20min',
+   videoTitle:'20min 臀腿普拉提｜改善假胯宽、O 型腿腿型回正，无器械',
+   bvid:'BV1SkXSBHETX',
+   exercises:[
+     {name:'蚌式开合',detail:'左右 20 次×3'},
+     {name:'侧卧内收腿',detail:'左右 20 次×3'},
+     {name:'青蛙趴',detail:'1min×3'},
+     {name:'大腿外侧放松（矿泉水瓶滚压）',detail:'2min'}
+   ],
+   focus:'膝盖不要内扣，感受臀部外侧发力，大腿内侧收紧。'},
+  {day:3,dayName:'周三',title:'腰腹轻薄塑形（无卷腹，不伤腰）',duration:'20min',
+   videoTitle:'20 分钟垫上｜全程无卷腹，强化深层核心、收紧小腹',
+   bvid:'BV1MRztBoEyY',
+   exercises:[
+     {name:'腹式呼吸',detail:'3min'},
+     {name:'死虫式',detail:'15 次×3'},
+     {name:'平板支撑',detail:'30s×3'}
+   ],
+   focus:'腰全程贴地，不要塌腰拱腰。'},
+  {day:4,dayName:'周四',title:'全身放松拉伸 + 高低肩薄弱侧补强',duration:'20min 恢复日',
+   videoTitle:'20 分钟全身深度拉伸｜肩颈腰背髋腿全覆盖，改善高低肩紧张',
+   bvid:'BV1n1LS6SEwT',
+   exercises:[
+     {name:'全身筋膜拉伸',detail:'10min（大腿前/后、小腿、肩背胸）'},
+     {name:'单侧墙壁天使（弱侧肩膀）',detail:'12 次×3 组'},
+     {name:'小腿拉伸',detail:'左右 40s'}
+   ],
+   focus:'今天不求出汗，主打放松肌肉、平衡双肩，酸痛感降到轻微即可。'},
+  {day:5,dayName:'周五',title:'下肢瘦腿优化（大小腿粗 + O 型腿力线）',duration:'20min',
+   videoTitle:'20min 腿部矫正瘦腿｜改善 O 型腿、大小腿粗壮、提臀',
+   bvid:'BV1vyf6BDEPR',
+   exercises:[
+     {name:'臀桥',detail:'20 次×3'},
+     {name:'坐姿腿内扣',detail:'25 次×3'},
+     {name:'踮脚慢落',detail:'15 次×3（下落 3 秒，不要猛砸地）'}
+   ],
+   focus:''},
+  {day:6,dayName:'周六',title:'休息日',duration:'',
+   videoTitle:'可选 10 分钟简易拉伸',
+   bvid:'BV1PV411v7Ej',
+   exercises:[],
+   focus:'休息为主，可做简易拉伸放松。'},
+  {day:0,dayName:'周日',title:'休息日',duration:'',
+   videoTitle:'可选 10 分钟简易拉伸',
+   bvid:'BV1PV411v7Ej',
+   exercises:[],
+   focus:'休息为主，可做简易拉伸放松。'}
+];
+const DAILY_HABITS = [
+  '禁止跷二郎腿、歪坐沙发，手机举到视线高度，减少头前伸',
+  '走路脚尖朝前，不要外八，改善 O 型腿发力',
+  '久坐每 40 分钟，做 1 分钟沉肩收下巴，缓解脖子肩膀痛'
+];
+const App = {
+  records: [], bodyData: [], types: [],
+  currentTab: 'plan',
+  bfMode: 'manual',
+  isSample: true,
+
+  KEYS: {
+    records: 'wb_fitness_records',
+    body: 'wb_fitness_body',
+    types: 'wb_fitness_types',
+    meta: 'wb_fitness_meta'
+  },
+
+  init() {
+    this.loadData();
+    this.setDefaultDates();
+    this.loadProfile();
+    this.renderAll();
+    this.bindEvents();
+    this.checkReminder();
+  },
+
+  // ===== 数据 =====
+  loadData() {
+    this.records = JSON.parse(localStorage.getItem(this.KEYS.records) || '[]');
+    this.bodyData = JSON.parse(localStorage.getItem(this.KEYS.body) || '[]');
+    this.types = JSON.parse(localStorage.getItem(this.KEYS.types) || '[]');
+    const meta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
+    this.isSample = meta.isSample !== false;
+
+    if (this.types.length === 0) {
+      this.types = ['体态训练','跑步','瑜伽','力量训练','骑行','拉伸放松'];
+      this.saveTypes();
+    }
+    if (this.bodyData.length === 0 && this.isSample) {
+      this.loadSampleData();
+    }
+  },
+
+  loadSampleData() {
+    const today = this.getToday();
+    const d3 = this.offsetDate(today, -4);
+    const d4 = this.offsetDate(today, -6);
+    const d5 = this.offsetDate(today, -9);
+
+    this.bodyData = [
+      { id:this.uid(), date:d5, weight:65.5, bodyFat:23.2, gender:'female', height:165, neck:34.0, waist:71.0, hip:93.0, bodyFatSource:'calc', createdAt:Date.now()-600000000 },
+      { id:this.uid(), date:d4, weight:65.2, bodyFat:22.8, gender:'female', height:165, neck:34.0, waist:70.5, hip:92.5, bodyFatSource:'calc', createdAt:Date.now()-500000000 },
+      { id:this.uid(), date:d3, weight:64.8, bodyFat:21.8, gender:'female', height:165, neck:33.8, waist:69.5, hip:91.5, bodyFatSource:'calc', createdAt:Date.now()-400000000 }
+    ];
+
+    this.isSample = true;
+    this.saveAll();
+  },
+
+  saveAll() {
+    localStorage.setItem(this.KEYS.records, JSON.stringify(this.records));
+    localStorage.setItem(this.KEYS.body, JSON.stringify(this.bodyData));
+    localStorage.setItem(this.KEYS.meta, JSON.stringify({ isSample: this.isSample }));
+  },
+  saveTypes() {
+    localStorage.setItem(this.KEYS.types, JSON.stringify(this.types));
+  },
+
+  // ===== 工具 =====
+  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); },
+  getToday() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  },
+  offsetDate(dateStr, days) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  },
+  formatDate(s) {
+    const parts = s.split('-');
+    return parts[1] + '月' + parts[2] + '日';
+  },
+  escapeHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  },
+
+  setDefaultDates() {
+    const today = this.getToday();
+    document.getElementById('bodyDate').value = today;
+  },
+
+  loadProfile() {
+    const meta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
+    const gender = meta.gender || 'female';
+    const height = meta.height || '';
+    document.getElementById('bodyGender').value = gender;
+    document.getElementById('bodyHeight').value = height;
+    this.updateHipVisibility();
+  },
+
+  saveProfile() {
+    const meta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
+    meta.gender = document.getElementById('bodyGender').value;
+    meta.height = document.getElementById('bodyHeight').value;
+    localStorage.setItem(this.KEYS.meta, JSON.stringify(meta));
+  },
+
+  calcBodyFat(gender, height, neck, waist, hip) {
+    if (!height || !neck || !waist) return null;
+    if (height <= 0 || neck <= 0 || waist <= 0) return null;
+    if (gender === 'male') {
+      if (waist <= neck) return null;
+      var bf = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+      return bf;
+    } else {
+      if (!hip || hip <= 0) return null;
+      if ((waist + hip) <= neck) return null;
+      var bf2 = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450;
+      return bf2;
+    }
+  },
+
+  switchBfMode(mode) {
+    this.bfMode = mode;
+    document.querySelectorAll('.bf-mode-tab').forEach(function(t) {
+      t.classList.toggle('active', t.dataset.mode === mode);
+    });
+    document.getElementById('bfManualMode').classList.toggle('active', mode === 'manual');
+    document.getElementById('bfCalcMode').classList.toggle('active', mode === 'calc');
+    if (mode === 'calc') this.updateBfCalc();
+  },
+
+  updateHipVisibility() {
+    var gender = document.getElementById('bodyGender').value;
+    var hipGroup = document.getElementById('hipGroup');
+    if (hipGroup) hipGroup.style.display = gender === 'female' ? '' : 'none';
+    this.updateBfCalc();
+  },
+
+  updateBfCalc() {
+    var result = document.getElementById('bfCalcResult');
+    if (!result) return;
+    var gender = document.getElementById('bodyGender').value;
+    var height = parseFloat(document.getElementById('bodyHeight').value);
+    var neck = parseFloat(document.getElementById('bodyNeck').value);
+    var waist = parseFloat(document.getElementById('bodyWaist').value);
+    var hip = parseFloat(document.getElementById('bodyHip').value);
+    var bf = this.calcBodyFat(gender, height, neck, waist, hip);
+    if (bf !== null && bf > 2 && bf < 60) {
+      result.classList.add('has-value');
+      result.innerHTML = '<span class="bf-value">' + bf.toFixed(1) + '%</span><span class="bf-label">预计体脂率（美国海军体脂公式）</span>';
+    } else {
+      result.classList.remove('has-value');
+      result.textContent = gender === 'female'
+        ? '填写身高、颈围、腰围、臀围后自动计算'
+        : '填写身高、颈围、腰围后自动计算';
+    }
+  },
+
+  // ===== 渲染 =====
+  renderAll() {
+    this.renderToday();
+    this.renderPlan();
+    this.renderHabits();
+    this.renderBodyData();
+    this.renderTypeManage();
+  },
+
+  renderTypeManage() {
+    const container = document.getElementById('typeManage');
+    let html = this.types.map(t =>
+      '<span class="type-chip">'+this.escapeHtml(t)+'<span class="remove" data-type="'+this.escapeHtml(t)+'">×</span></span>'
+    ).join('');
+    html += '<button class="type-add" id="typeAddBtn">＋ 添加类型</button>';
+    container.innerHTML = html;
+
+    container.querySelectorAll('.remove').forEach(el => {
+      el.onclick = () => {
+        const t = el.dataset.type;
+        this.types = this.types.filter(x => x !== t);
+        this.saveTypes();
+        this.renderTypeManage();
+        this.toast('已删除类型：' + t);
+      };
+    });
+    document.getElementById('typeAddBtn').onclick = () => {
+      const name = prompt('输入运动类型名称：');
+      if (name && name.trim()) {
+        const t = name.trim();
+        if (!this.types.includes(t)) {
+          this.types.push(t);
+          this.saveTypes();
+          this.renderTypeManage();
+          this.toast('已添加类型：' + t);
+        }
+      }
+    };
+  },
+
+  renderToday() {
+    const container = document.getElementById('todayList');
+    const plan = this.getTodayPlan();
+
+    if (!plan) {
+      container.innerHTML = '<div class="today-empty">今天没有训练计划</div>';
+      return;
+    }
+
+    const isRest = plan.day === 6 || plan.day === 0;
+    container.innerHTML = '<div class="today-plan-card">' +
+      '<span class="today-plan-day">' + plan.dayName + ' · 今天</span>' +
+      '<div class="today-plan-info">' +
+        '<div class="today-plan-title">' + this.escapeHtml(plan.title) + '</div>' +
+        '<div class="today-plan-meta">' + (plan.duration || (isRest ? '休息日' : '')) + '</div>' +
+      '</div>' +
+      (plan.bvid ? '<a class="plan-action-btn video" href="https://www.bilibili.com/video/' + plan.bvid + '/" target="_blank" rel="noopener">跟练</a>' : '') +
+    '</div>';
+
+    const btn = container.querySelector('.plan-action-btn.video');
+    if (btn) {
+      btn.onclick = () => {
+        const card = document.querySelector('.plan-day.today');
+        if (card) {
+          card.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+      };
+    }
+  },
+
+  renderBodyData() {
+    this.renderChart();
+    this.renderBodyStats();
+    this.renderBodyList();
+  },
+
+  renderBodyStats() {
+    const container = document.getElementById('bodyStats');
+    const sorted = this.bodyData.slice().sort((a,b) => a.date.localeCompare(b.date));
+    if (sorted.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+    const latest = sorted[sorted.length - 1];
+    const prev = sorted.length > 1 ? sorted[sorted.length - 2] : null;
+
+    const wChange = prev ? latest.weight - prev.weight : 0;
+    const fChange = prev ? latest.bodyFat - prev.bodyFat : 0;
+
+    const fmtChange = (v, unit) => {
+      if (v === 0) return '<span class="stat-change flat">—</span>';
+      const cls = v > 0 ? 'up' : 'down';
+      const arrow = v > 0 ? '↑' : '↓';
+      return '<span class="stat-change '+cls+'">'+arrow+' '+Math.abs(v).toFixed(1)+unit+'</span>';
+    };
+
+    container.innerHTML =
+      '<div class="stat-card">' +
+        '<div class="stat-value">'+latest.weight.toFixed(1)+'</div>' +
+        '<div class="stat-label">体重 (kg)</div>' +
+        fmtChange(wChange, '') +
+      '</div>' +
+      '<div class="stat-card">' +
+        '<div class="stat-value">'+latest.bodyFat.toFixed(1)+'%</div>' +
+        '<div class="stat-label">体脂率</div>' +
+        fmtChange(fChange, '%') +
+      '</div>';
+  },
+
+  renderChart() {
+    const container = document.getElementById('chartContainer');
+    const data = this.bodyData.slice().sort((a,b) => a.date.localeCompare(b.date));
+
+    if (data.length === 0) {
+      container.innerHTML = '<div class="empty-state" style="padding:24px">暂无数据，添加后自动生成趋势图</div>';
+      return;
+    }
+
+    const W = 640, H = 220;
+    const pad = { top:20, right:50, bottom:35, left:45 };
+    const pw = W - pad.left - pad.right;
+    const ph = H - pad.top - pad.bottom;
+
+    const weights = data.map(d => d.weight);
+    const fats = data.map(d => d.bodyFat);
+    let wMin = Math.min(...weights), wMax = Math.max(...weights);
+    let fMin = Math.min(...fats), fMax = Math.max(...fats);
+    if (wMin === wMax) { wMin -= 1; wMax += 1; }
+    if (fMin === fMax) { fMin -= 1; fMax += 1; }
+    wMin = Math.floor((wMin - 0.5) * 10) / 10;
+    wMax = Math.ceil((wMax + 0.5) * 10) / 10;
+    fMin = Math.floor((fMin - 0.5) * 10) / 10;
+    fMax = Math.ceil((fMax + 0.5) * 10) / 10;
+    const wRange = wMax - wMin || 1;
+    const fRange = fMax - fMin || 1;
+
+    const xPos = i => data.length > 1 ? pad.left + (i / (data.length - 1)) * pw : pad.left + pw / 2;
+    const wY = v => pad.top + (1 - (v - wMin) / wRange) * ph;
+    const fY = v => pad.top + (1 - (v - fMin) / fRange) * ph;
+
+    let wPath = '', fPath = '', wDots = '', fDots = '';
+    data.forEach((d, i) => {
+      const x = xPos(i);
+      const wy = wY(d.weight);
+      const fy = fY(d.bodyFat);
+      wPath += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + wy.toFixed(1) + ' ';
+      fPath += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + fy.toFixed(1) + ' ';
+      wDots += '<circle cx="'+x.toFixed(1)+'" cy="'+wy.toFixed(1)+'" r="3.5" fill="#1a1a1a"/>';
+      fDots += '<circle cx="'+x.toFixed(1)+'" cy="'+fy.toFixed(1)+'" r="3.5" fill="#999" stroke="#fff" stroke-width="1.5"/>';
+    });
+
+    // 网格线
+    let grid = '';
+    for (let i = 0; i <= 2; i++) {
+      const y = pad.top + (i / 2) * ph;
+      grid += '<line x1="'+pad.left+'" y1="'+y.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+y.toFixed(1)+'" stroke="#f0f0f0" stroke-width="1"/>';
+    }
+
+    // Y 轴标签
+    const wLabels = [wMax, (wMin+wMax)/2, wMin];
+    const fLabels = [fMax, (fMin+fMax)/2, fMin];
+    let wLabelHtml = '', fLabelHtml = '';
+    wLabels.forEach((v, i) => {
+      const y = pad.top + (i/2)*ph;
+      wLabelHtml += '<text x="'+(pad.left-8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#1a1a1a" text-anchor="end">'+v.toFixed(1)+'</text>';
+    });
+    fLabels.forEach((v, i) => {
+      const y = pad.top + (i/2)*ph;
+      fLabelHtml += '<text x="'+(W-pad.right+8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#999" text-anchor="start">'+v.toFixed(1)+'%</text>';
+    });
+
+    // X 轴标签
+    let xLabelHtml = '';
+    data.forEach((d, i) => {
+      if (data.length > 7 && i % 2 !== 0 && i !== data.length - 1) return;
+      const x = xPos(i);
+      xLabelHtml += '<text x="'+x.toFixed(1)+'" y="'+(H-10)+'" font-size="11" fill="#999" text-anchor="middle">'+d.date.slice(5)+'</text>';
+    });
+
+    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-height:240px;display:block">' +
+      grid + wLabelHtml + fLabelHtml +
+      '<path d="'+wPath+'" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+      wDots +
+      '<path d="'+fPath+'" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="5,3" stroke-linejoin="round" stroke-linecap="round"/>' +
+      fDots + xLabelHtml +
+    '</svg>';
+  },
+
+  renderBodyList() {
+    const container = document.getElementById('bodyList');
+    const sorted = this.bodyData.slice().sort((a,b) => b.date.localeCompare(a.date));
+
+    if (sorted.length === 0) {
+      container.innerHTML = '<div class="empty-state">' +
+        '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>' +
+        '<div>还没有身体数据，开始记录吧</div></div>';
+      return;
+    }
+
+    container.innerHTML = sorted.map(d => {
+      var tags = '';
+      if (d.neck) tags += '<span class="body-tag">颈围 ' + d.neck.toFixed(1) + '</span>';
+      if (d.waist) tags += '<span class="body-tag">腰围 ' + d.waist.toFixed(1) + '</span>';
+      if (d.hip) tags += '<span class="body-tag">臀围 ' + d.hip.toFixed(1) + '</span>';
+      var sourceTag = d.bodyFatSource === 'calc'
+        ? '<span class="body-tag calc">围度计算</span>'
+        : '<span class="body-tag">手动输入</span>';
+      return '<div class="record-item">' +
+        '<div class="record-item-header">' +
+          '<div class="record-item-title">' +
+            '<span class="record-date">' + d.date + '</span>' +
+          '</div>' +
+          '<button class="record-del" data-id="' + d.id + '">' +
+            '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="record-meta">' +
+          '<span class="record-meta-item">体重 ' + d.weight.toFixed(1) + ' kg</span>' +
+          '<span class="record-meta-item">体脂率 ' + d.bodyFat.toFixed(1) + '%</span>' +
+        '</div>' +
+        (tags ? '<div class="body-detail-tags">' + sourceTag + tags + '</div>' : '') +
+      '</div>';
+    }).join('');
+
+    container.querySelectorAll('.record-del').forEach(btn => {
+      btn.onclick = () => this.deleteBodyData(btn.dataset.id);
+    });
+  },
+
+  // ===== 操作 =====
+  addBodyData() {
+    var date = document.getElementById('bodyDate').value;
+    var weight = parseFloat(document.getElementById('bodyWeight').value);
+    var gender = document.getElementById('bodyGender').value;
+    var height = parseFloat(document.getElementById('bodyHeight').value);
+
+    if (!date) { this.toast('请选择日期'); return; }
+    if (!weight || weight <= 0) { this.toast('请输入体重'); return; }
+    if (!height || height <= 0) { this.toast('请输入身高'); return; }
+
+    this.saveProfile();
+
+    var bodyFat, entry = { gender: gender, height: height };
+
+    if (this.bfMode === 'calc') {
+      var neck = parseFloat(document.getElementById('bodyNeck').value);
+      var waist = parseFloat(document.getElementById('bodyWaist').value);
+      var hip = parseFloat(document.getElementById('bodyHip').value);
+      if (!neck || !waist) { this.toast('请填写颈围和腰围'); return; }
+      if (gender === 'female' && !hip) { this.toast('女性需填写臀围'); return; }
+      bodyFat = this.calcBodyFat(gender, height, neck, waist, hip);
+      if (bodyFat === null || bodyFat <= 2 || bodyFat >= 60) { this.toast('围度数据不合理，请检查'); return; }
+      entry.neck = neck;
+      entry.waist = waist;
+      if (hip) entry.hip = hip;
+      entry.bodyFatSource = 'calc';
+    } else {
+      bodyFat = parseFloat(document.getElementById('bodyFat').value);
+      if (!bodyFat || bodyFat <= 0) { this.toast('请输入体脂率'); return; }
+      entry.bodyFatSource = 'manual';
+    }
+
+    this.isSample = false;
+    this.bodyData.push(Object.assign({
+      id: this.uid(), date: date, weight: weight, bodyFat: bodyFat,
+      createdAt: Date.now()
+    }, entry));
+    this.saveAll();
+    document.getElementById('bodyWeight').value = '';
+    document.getElementById('bodyFat').value = '';
+    document.getElementById('bodyNeck').value = '';
+    document.getElementById('bodyWaist').value = '';
+    document.getElementById('bodyHip').value = '';
+    this.renderBodyData();
+    this.checkReminder();
+    this.toast('身体数据已保存');
+  },
+
+  deleteBodyData(id) {
+    this.bodyData = this.bodyData.filter(d => d.id !== id);
+    this.saveAll();
+    this.renderBodyData();
+    this.checkReminder();
+    this.toast('数据已删除');
+  },
+
+  // ===== 数据管理 =====
+  exportData() {
+    const meta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
+    const data = {
+      bodyData: this.bodyData,
+      types: this.types,
+      meta: meta,
+      exportDate: new Date().toISOString(),
+      version: 4
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '体态训练台备份_' + this.getToday() + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.toast('已导出备份文件');
+  },
+
+  importData(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data.bodyData) {
+          this.toast('文件格式不正确');
+          return;
+        }
+        this.showModal('导入数据', '将覆盖当前所有数据，确定继续吗？', () => {
+          if (data.bodyData) this.bodyData = data.bodyData;
+          if (data.types) this.types = data.types;
+          if (data.meta) localStorage.setItem(this.KEYS.meta, JSON.stringify(data.meta));
+          this.isSample = false;
+          this.saveAll();
+          this.saveTypes();
+          this.loadProfile();
+          this.renderAll();
+          this.checkReminder();
+          this.toast('数据导入成功');
+        });
+      } catch(err) {
+        this.toast('文件解析失败：' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  },
+
+  clearSample() {
+    if (!this.isSample) {
+      this.toast('当前不是示例数据');
+      return;
+    }
+    this.showModal('清空示例数据', '将删除所有预置的示例数据，确定吗？', () => {
+      this.bodyData = [];
+      this.isSample = false;
+      this.saveAll();
+      this.renderAll();
+      this.checkReminder();
+      this.toast('示例数据已清空');
+    });
+  },
+
+  clearAll() {
+    this.showModal('清空全部数据', '此操作将删除所有身体数据，且不可恢复！确定继续吗？', () => {
+      this.bodyData = [];
+      this.isSample = false;
+      this.saveAll();
+      this.renderAll();
+      this.checkReminder();
+      this.toast('全部数据已清空');
+    });
+  },
+
+  checkReminder() {
+    const total = this.bodyData.length;
+    const el = document.getElementById('backupReminder');
+    const text = document.getElementById('reminderText');
+    if (total >= 30 && total % 10 === 0) {
+      text.textContent = '数据已积累 ' + total + ' 条，建议导出备份以免丢失';
+      el.classList.remove('hidden');
+    } else if (total >= 30) {
+      text.textContent = '数据已积累 ' + total + ' 条，建议定期导出备份';
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  },
+
+  // ===== 训练计划 =====
+  getTodayPlan() {
+    const day = new Date().getDay();
+    return WEEKLY_PLAN.find(p => p.day === day) || null;
+  },
+
+  renderPlan() {
+    const container = document.getElementById('planList');
+    const today = new Date().getDay();
+    container.innerHTML = WEEKLY_PLAN.map(p => {
+      const isToday = p.day === today;
+
+      const focusHtml = p.focus
+        ? '<div class="plan-focus">' +
+            '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+            '<span>' + this.escapeHtml(p.focus) + '</span>' +
+          '</div>'
+        : '';
+
+      return '<div class="plan-day' + (isToday ? ' today' : '') + '">' +
+        '<div class="plan-day-header">' +
+          '<div class="plan-day-label">' +
+            '<span class="day-badge">' + p.dayName + (isToday ? ' · 今天' : '') + '</span>' +
+            '<span class="plan-day-title">' + this.escapeHtml(p.title) + '</span>' +
+          '</div>' +
+          (p.duration ? '<span class="plan-duration">' + p.duration + '</span>' : '') +
+        '</div>' +
+        '<div class="plan-video-info">' + this.escapeHtml(p.videoTitle) + '</div>' +
+        (p.bvid ? '<a class="plan-video-wrapper" href="https://www.bilibili.com/video/' + p.bvid + '/" target="_blank" rel="noopener">' +
+          '<div class="plan-video-cover">' +
+            '<div class="play-circle"><svg viewBox="0 0 24 24" width="24" height="24" fill="#1a1a1a"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>' +
+            '<div class="cover-text">点击跳转 B 站播放跟练视频</div>' +
+          '</div>' +
+        '</a>' : '') +
+        focusHtml +
+      '</div>';
+    }).join('');
+  },
+
+  renderHabits() {
+    const container = document.getElementById('habitsList');
+    container.innerHTML = DAILY_HABITS.map((h, i) =>
+      '<li><span class="habits-num">' + (i+1) + '</span><span>' + this.escapeHtml(h) + '</span></li>'
+    ).join('');
+  },
+
+  // ===== UI =====
+  switchTab(name) {
+    this.currentTab = name;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === name + 'Tab'));
+  },
+
+  showModal(title, msg, onConfirm) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMsg').textContent = msg;
+    document.getElementById('modalOverlay').classList.remove('hidden');
+    this._modalConfirm = onConfirm;
+  },
+
+  hideModal() {
+    document.getElementById('modalOverlay').classList.add('hidden');
+    this._modalConfirm = null;
+  },
+
+  toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+  },
+
+  // ===== 事件绑定 =====
+  bindEvents() {
+    // Tab 切换
+    document.querySelectorAll('.tab').forEach(t => {
+      t.onclick = () => this.switchTab(t.dataset.tab);
+    });
+
+    // 导出导入
+    document.getElementById('exportBtn').onclick = () => this.exportData();
+    document.getElementById('importBtn').onclick = () => document.getElementById('importFile').click();
+    document.getElementById('importFile').onchange = (e) => {
+      if (e.target.files[0]) this.importData(e.target.files[0]);
+      e.target.value = '';
+    };
+
+    // 提交
+    document.getElementById('bodySubmit').onclick = () => this.addBodyData();
+
+    // 体脂率模式切换
+    document.querySelectorAll('.bf-mode-tab').forEach(t => {
+      t.onclick = () => this.switchBfMode(t.dataset.mode);
+    });
+    // 性别切换
+    document.getElementById('bodyGender').onchange = () => this.updateHipVisibility();
+    // 围度实时计算
+    ['bodyHeight','bodyNeck','bodyWaist','bodyHip'].forEach(id => {
+      document.getElementById(id).oninput = () => this.updateBfCalc();
+    });
+
+    // 清空
+    document.getElementById('clearSampleBtn').onclick = () => this.clearSample();
+    document.getElementById('clearAllBtn').onclick = () => this.clearAll();
+
+    // 模态框
+    document.getElementById('modalCancel').onclick = () => this.hideModal();
+    document.getElementById('modalConfirm').onclick = () => {
+      if (this._modalConfirm) this._modalConfirm();
+      this.hideModal();
+    };
+    document.getElementById('modalOverlay').onclick = (e) => {
+      if (e.target.id === 'modalOverlay') this.hideModal();
+    };
+  }
+};
+
+App.init();
+</script>
+</body>
+</html>
