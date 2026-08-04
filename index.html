@@ -19,7 +19,48 @@ body{
   background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;
   -webkit-font-smoothing:antialiased;
 }
-#app{max-width:680px;margin:0 auto;padding:16px;padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+#app{display:flex;min-height:100vh}
+/* 侧边栏 */
+.sidebar{
+  width:200px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:12px;position:sticky;top:0;height:100vh;
+  transition:width .2s;overflow:hidden;
+}
+.sidebar.collapsed{width:56px}
+.sidebar-header{
+  display:flex;align-items:center;gap:8px;padding:8px;margin-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-logo{
+  width:32px;height:32px;flex-shrink:0;border-radius:8px;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;
+}
+.sidebar-title{
+  font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;
+}
+.sidebar.collapsed .sidebar-title{display:none}
+.sidebar-toggle{
+  margin-left:auto;background:transparent;border:none;cursor:pointer;color:var(--text-2);
+  display:flex;align-items:center;justify-content:center;padding:4px;border-radius:4px;
+}
+.sidebar.collapsed .sidebar-toggle{margin:0 auto}
+.nav-list{display:flex;flex-direction:column;gap:2px;flex:1}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:10px;border:none;background:transparent;
+  border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:500;color:var(--text-2);
+  font-family:inherit;transition:all .15s;text-align:left;width:100%;
+}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--primary);color:#fff}
+.nav-item svg{flex-shrink:0}
+.sidebar.collapsed .nav-item{justify-content:center;padding:10px}
+.sidebar.collapsed .nav-item span{display:none}
+.sidebar-footer{
+  display:flex;flex-direction:column;gap:6px;padding-top:8px;border-top:1px solid var(--border);margin-top:8px;
+}
+.sidebar.collapsed .sidebar-footer .icon-btn{justify-content:center}
+/* 主内容 */
+.main{flex:1;min-width:0;padding:16px;padding-bottom:calc(40px + env(safe-area-inset-bottom))}
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .header h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
 .header-actions{display:flex;gap:8px}
@@ -29,6 +70,28 @@ body{
   color:var(--text-2);transition:all .15s;min-width:36px;min-height:36px;
 }
 .icon-btn:hover{background:var(--bg);color:var(--text)}
+/* 仪表盘 */
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.dash-card{
+  background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);
+  cursor:pointer;transition:all .15s;border:1px solid var(--border);
+}
+.dash-card:hover{border-color:var(--primary);transform:translateY(-1px)}
+.dash-card.full{grid-column:1/-1}
+.dash-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dash-card-title{font-size:13px;color:var(--text-2);font-weight:500}
+.dash-card-icon{color:var(--text-3)}
+.dash-card-value{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.dash-card-sub{font-size:12px;color:var(--text-3);margin-top:2px}
+.dash-today-card{
+  background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:16px;
+  box-shadow:var(--shadow);border-left:3px solid var(--primary);cursor:pointer;transition:all .15s;
+}
+.dash-today-card:hover{transform:translateY(-1px)}
+.dash-today-label{font-size:12px;color:var(--text-3);margin-bottom:4px}
+.dash-today-title{font-size:16px;font-weight:600}
+.dash-today-meta{font-size:13px;color:var(--text-2);margin-top:4px}
+.dash-section-title{font-size:15px;font-weight:600;margin:16px 0 10px}
 .today-section{
   background:var(--card);border-radius:var(--radius);padding:16px;
   margin-bottom:16px;box-shadow:var(--shadow);
@@ -42,18 +105,9 @@ body{
   display:flex;align-items:center;gap:8px;
 }
 .reminder.hidden{display:none}
-.tabs{
-  display:flex;gap:4px;background:var(--card);border-radius:var(--radius);
-  padding:4px;margin-bottom:16px;box-shadow:var(--shadow);position:sticky;top:8px;z-index:10;
-}
-.tab{
-  flex:1;background:transparent;border:none;padding:10px;border-radius:var(--radius-sm);
-  font-size:14px;font-weight:500;color:var(--text-2);cursor:pointer;
-  transition:all .15s;font-family:inherit;
-}
-.tab.active{background:var(--primary);color:#fff}
-.tab-content{display:none}
-.tab-content.active{display:block;animation:fadeIn .2s}
+/* 模块切换 */
+.module{display:none}
+.module.active{display:block;animation:fadeIn .2s}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .card{
   background:var(--card);border-radius:var(--radius);padding:16px;
@@ -369,10 +423,34 @@ body{
 </head>
 <body>
 <div id="app">
-  <!-- 顶部栏 -->
-  <div class="header">
-    <h1>体态训练台</h1>
-    <div class="header-actions">
+  <!-- 侧边栏 -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">我</div>
+      <div class="sidebar-title">我的工作台</div>
+      <button class="sidebar-toggle" id="sidebarToggle" title="折叠/展开">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+    <nav class="nav-list">
+      <button class="nav-item active" data-module="home">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>首页</span>
+      </button>
+      <button class="nav-item" data-module="plan">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>训练计划</span>
+      </button>
+      <button class="nav-item" data-module="body">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>身体数据</span>
+      </button>
+      <button class="nav-item" data-module="calendar">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>训练日历</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
       <button class="icon-btn" id="exportBtn" title="导出备份">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
@@ -381,6 +459,13 @@ body{
       </button>
       <input type="file" id="importFile" accept=".json" hidden>
     </div>
+  </aside>
+
+  <!-- 主内容 -->
+  <main class="main">
+  <!-- 顶部栏 -->
+  <div class="header">
+    <h1 id="pageTitle">首页</h1>
   </div>
 
   <!-- 数据量提醒 -->
@@ -389,15 +474,17 @@ body{
     <span id="reminderText"></span>
   </div>
 
-  <!-- Tabs -->
-  <nav class="tabs">
-    <button class="tab active" data-tab="plan">训练计划</button>
-    <button class="tab" data-tab="body">身体数据</button>
-    <button class="tab" data-tab="calendar">训练日历</button>
-  </nav>
+  <!-- 首页仪表盘 -->
+  <section id="homeModule" class="module active">
+    <div id="dashboardToday"></div>
+    <div class="dash-section-title">数据概览</div>
+    <div class="dashboard-grid" id="dashboardGrid"></div>
+    <div class="dash-section-title">快速入口</div>
+    <div class="dashboard-grid" id="dashboardQuick"></div>
+  </section>
 
   <!-- 训练计划 -->
-  <section id="planTab" class="tab-content active">
+  <section id="planModule" class="module">
     <!-- 今天要处理 -->
     <div class="today-section">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
@@ -434,7 +521,7 @@ body{
   </section>
 
   <!-- 身体数据 -->
-  <section id="bodyTab" class="tab-content">
+  <section id="bodyModule" class="module">
     <div class="card">
       <div class="section-title">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -502,7 +589,7 @@ body{
   </section>
 
   <!-- 训练日历 -->
-  <section id="calendarTab" class="tab-content">
+  <section id="calendarModule" class="module">
     <div class="card">
       <div class="section-title">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -519,7 +606,7 @@ body{
   </section>
 
   <!-- 底部设置 -->
-  <div class="footer-section">
+  <section id="settingsModule" class="module">
     <div class="card">
       <div class="section-title">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -536,7 +623,8 @@ body{
         <button class="btn btn-danger btn-sm" id="clearAllBtn">清空全部数据</button>
       </div>
     </div>
-  </div>
+  </section>
+  </main>
 </div>
 
 <!-- 确认弹窗 -->
@@ -652,7 +740,7 @@ const DAILY_HABITS = [
 ];
 const App = {
   records: [], bodyData: [], types: [], planData: [], checkins: {},
-  currentTab: 'plan',
+  currentModule: 'home',
   bfMode: 'manual',
   isSample: true,
   calendarMonth: null,
@@ -663,16 +751,102 @@ const App = {
     types: 'wb_fitness_types',
     meta: 'wb_fitness_meta',
     plans: 'wb_fitness_plans',
-    checkins: 'wb_fitness_checkins'
+    checkins: 'wb_fitness_checkins',
+    nav: 'wb_fitness_nav'
   },
 
   init() {
     this.loadData();
     this.setDefaultDates();
     this.loadProfile();
+    this.loadNavState();
     this.renderAll();
     this.bindEvents();
     this.checkReminder();
+  },
+
+  loadNavState() {
+    var nav = JSON.parse(localStorage.getItem(this.KEYS.nav) || '{}');
+    if (nav.collapsed) {
+      document.getElementById('sidebar').classList.add('collapsed');
+    }
+  },
+  toggleSidebar() {
+    var sb = document.getElementById('sidebar');
+    sb.classList.toggle('collapsed');
+    localStorage.setItem(this.KEYS.nav, JSON.stringify({ collapsed: sb.classList.contains('collapsed') }));
+  },
+
+  switchModule(name) {
+    this.currentModule = name;
+    document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    var module = document.getElementById(name + 'Module');
+    if (module) module.classList.add('active');
+    var navItem = document.querySelector('.nav-item[data-module="' + name + '"]');
+    if (navItem) navItem.classList.add('active');
+    var titles = { home: '首页', plan: '训练计划', body: '身体数据', calendar: '训练日历', settings: '设置' };
+    document.getElementById('pageTitle').textContent = titles[name] || '';
+    if (name === 'home') this.renderDashboard();
+  },
+
+  renderDashboard() {
+    var todayContainer = document.getElementById('dashboardToday');
+    var grid = document.getElementById('dashboardGrid');
+    var quick = document.getElementById('dashboardQuick');
+    var plan = this.getTodayPlan();
+    var today = this.getToday();
+    var isChecked = !!this.checkins[today];
+
+    // 今日训练卡片
+    if (plan) {
+      var isRest = plan.day === 6 || plan.day === 0;
+      todayContainer.innerHTML = '<div class="dash-today-card" data-goto="plan">' +
+        '<div class="dash-today-label">' + plan.dayName + ' · 今天</div>' +
+        '<div class="dash-today-title">' + this.escapeHtml(plan.title) + '</div>' +
+        '<div class="dash-today-meta">' + (plan.duration || (isRest ? '休息日' : '')) + (isChecked ? ' · 已打卡 ✓' : ' · 未打卡') + '</div>' +
+      '</div>';
+    } else {
+      todayContainer.innerHTML = '<div class="dash-today-card" data-goto="plan"><div class="dash-today-label">今天</div><div class="dash-today-title">无训练计划</div></div>';
+    }
+
+    // 数据概览
+    var sortedBody = this.bodyData.slice().sort((a,b) => a.date.localeCompare(b.date));
+    var latest = sortedBody[sortedBody.length - 1];
+    var weight = latest ? latest.weight.toFixed(1) + ' kg' : '—';
+    var bodyFat = latest ? latest.bodyFat.toFixed(1) + '%' : '—';
+    var checkinCount = Object.keys(this.checkins).length;
+    var planCount = this.planData.length;
+
+    grid.innerHTML =
+      '<div class="dash-card" data-goto="body">' +
+        '<div class="dash-card-header"><span class="dash-card-title">体重</span></div>' +
+        '<div class="dash-card-value">' + weight + '</div>' +
+      '</div>' +
+      '<div class="dash-card" data-goto="body">' +
+        '<div class="dash-card-header"><span class="dash-card-title">体脂率</span></div>' +
+        '<div class="dash-card-value">' + bodyFat + '</div>' +
+      '</div>' +
+      '<div class="dash-card" data-goto="calendar">' +
+        '<div class="dash-card-header"><span class="dash-card-title">累计打卡</span></div>' +
+        '<div class="dash-card-value">' + checkinCount + ' 次</div>' +
+      '</div>' +
+      '<div class="dash-card" data-goto="plan">' +
+        '<div class="dash-card-header"><span class="dash-card-title">计划版本</span></div>' +
+        '<div class="dash-card-value">' + planCount + ' 份</div>' +
+      '</div>';
+
+    // 快速入口
+    quick.innerHTML =
+      '<div class="dash-card" data-goto="plan"><div class="dash-card-header"><span class="dash-card-title">训练计划</span></div><div class="dash-card-sub">查看本周计划</div></div>' +
+      '<div class="dash-card" data-goto="body"><div class="dash-card-header"><span class="dash-card-title">身体数据</span></div><div class="dash-card-sub">记录与分析</div></div>' +
+      '<div class="dash-card" data-goto="calendar"><div class="dash-card-header"><span class="dash-card-title">训练日历</span></div><div class="dash-card-sub">打卡月历</div></div>' +
+      '<div class="dash-card" data-goto="settings"><div class="dash-card-header"><span class="dash-card-title">设置</span></div><div class="dash-card-sub">数据管理</div></div>';
+
+    // 绑定卡片点击跳转
+    document.querySelectorAll('[data-goto]').forEach(card => {
+      card.onclick = () => this.switchModule(card.dataset.goto);
+    });
   },
 
   // ===== 数据 =====
@@ -840,6 +1014,7 @@ const App = {
     this.renderBodyData();
     this.renderTypeManage();
     this.renderCalendar();
+    this.renderDashboard();
   },
 
   renderTypeManage() {
@@ -1502,12 +1677,6 @@ const App = {
   },
 
   // ===== UI =====
-  switchTab(name) {
-    this.currentTab = name;
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === name + 'Tab'));
-  },
-
   showModal(title, msg, onConfirm) {
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalMsg').textContent = msg;
@@ -1530,10 +1699,12 @@ const App = {
 
   // ===== 事件绑定 =====
   bindEvents() {
-    // Tab 切换
-    document.querySelectorAll('.tab').forEach(t => {
-      t.onclick = () => this.switchTab(t.dataset.tab);
+    // 模块切换
+    document.querySelectorAll('.nav-item').forEach(n => {
+      n.onclick = () => this.switchModule(n.dataset.module);
     });
+    // 侧边栏折叠
+    document.getElementById('sidebarToggle').onclick = () => this.toggleSidebar();
 
     // 导出导入
     document.getElementById('exportBtn').onclick = () => this.exportData();
