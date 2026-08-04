@@ -716,13 +716,13 @@ body{
   <!-- 生理期模块 -->
   <section id="periodModule" class="module">
     <nav class="tabs">
-      <button class="tab active" data-ptab="calendar">年度日历</button>
-      <button class="tab" data-ptab="stats">周期统计</button>
+      <button class="tab active" data-ptab="stats">周期统计</button>
       <button class="tab" data-ptab="record">记录</button>
+      <button class="tab" data-ptab="calendar">年度日历</button>
     </nav>
 
     <!-- 年度日历 Tab -->
-    <div id="pCalendarTab" class="tab-content active">
+    <div id="pCalendarTab" class="tab-content">
       <div class="card">
         <div class="period-year-header">
           <button class="calendar-nav" id="pYearPrev">‹</button>
@@ -739,7 +739,7 @@ body{
     </div>
 
     <!-- 周期统计 Tab -->
-    <div id="pStatsTab" class="tab-content">
+    <div id="pStatsTab" class="tab-content active">
       <div class="card">
         <div class="period-stats-header">
           <div class="period-stats-switch">
@@ -964,7 +964,7 @@ const App = {
   isSample: true,
   calendarMonth: null,
   periodYear: null,
-  periodTab: 'calendar',
+  periodTab: 'stats',
   periodChartType: 'narrow',
   periodDim: 'period',
   periodFlow: 3,
