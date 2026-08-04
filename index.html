@@ -1123,25 +1123,41 @@ const App = {
     if (this.periodData.length === 0 && this.isSample) {
       this.loadSamplePeriods();
     }
+    // 数据版本：v2=用户真实数据，覆盖旧v1示例
+    const meta2 = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
+    if (meta2.periodDataVersion !== 2) {
+      this.loadSamplePeriods();
+      localStorage.setItem(this.KEYS.meta, JSON.stringify({ isSample: this.isSample, gender: meta2.gender, height: meta2.height, periodDataVersion: 2 }));
+    }
   },
 
   loadSamplePeriods() {
-    const today = this.getToday();
-    // 生成2026年1-6月的示例数据，参考用户截图
+    // 用户真实数据（2024-03 ~ 2026-05）
     const samples = [
-      { start:'2026-01-01', end:'2026-01-04', flow:3, pain:2 },
-      { start:'2026-01-29', end:'2026-01-31', flow:3, pain:1 },
-      { start:'2026-02-01', end:'2026-02-04', flow:3, pain:2 },
-      { start:'2026-03-09', end:'2026-03-13', flow:3, pain:2 },
-      { start:'2026-04-25', end:'2026-04-28', flow:3, pain:2 },
-      { start:'2026-04-29', end:'2026-04-30', flow:2, pain:1 },
-      { start:'2026-05-31', end:'2026-05-31', flow:2, pain:1 },
-      { start:'2026-06-01', end:'2026-06-04', flow:3, pain:2 },
+      { start:'2024-03-20', days:5, flow:3, pain:1 },
+      { start:'2024-07-09', days:5, flow:3, pain:1 },
+      { start:'2024-08-16', days:5, flow:3, pain:1 },
+      { start:'2024-09-22', days:5, flow:3, pain:2 },
+      { start:'2024-11-15', days:5, flow:3, pain:1 },
+      { start:'2024-12-18', days:7, flow:4, pain:2 },
+      { start:'2025-02-05', days:6, flow:3, pain:1 },
+      { start:'2025-03-22', days:5, flow:3, pain:2 },
+      { start:'2025-06-07', days:6, flow:3, pain:1 },
+      { start:'2025-07-16', days:5, flow:3, pain:1 },
+      { start:'2025-08-27', days:5, flow:3, pain:1 },
+      { start:'2025-10-02', days:7, flow:4, pain:2 },
+      { start:'2025-11-17', days:6, flow:3, pain:1 },
+      { start:'2025-12-04', days:5, flow:3, pain:1 },
+      { start:'2025-12-30', days:6, flow:3, pain:1 },
+      { start:'2026-01-29', days:7, flow:4, pain:2 },
+      { start:'2026-03-09', days:5, flow:3, pain:1 },
+      { start:'2026-04-25', days:6, flow:3, pain:1 },
+      { start:'2026-05-31', days:5, flow:3, pain:1 }
     ];
     this.periodData = samples.map(s => ({
       id: this.uid(),
       startDate: s.start,
-      endDate: s.end,
+      endDate: this.addDays(s.start, s.days - 1),
       flow: s.flow,
       pain: s.pain,
       note: '',
@@ -2182,11 +2198,11 @@ const App = {
       return;
     }
 
-    // 取最近12个周期显示
-    const showCycles = cycles.slice(-12);
+    // 细柱图显示全部周期，宽柱图显示最近12个
+    const showCycles = this.periodChartType === 'narrow' ? cycles : cycles.slice(-12);
     const N = showCycles.length;
-    const W = 640, H = 360;
-    const pad = { top: 50, right: 30, bottom: 50, left: 40 };
+    const W = 720, H = 520;
+    const pad = { top: 60, right: 80, bottom: 50, left: 40 };
     const pw = W - pad.left - pad.right;
     const ph = H - pad.top - pad.bottom;
 
@@ -2197,7 +2213,7 @@ const App = {
     const yMin = 0;
     const yRange = yMax - yMin || 1;
 
-    const barWidth = this.periodChartType === 'wide' ? pw / (N * 1.5) : pw / (N * 2.5);
+    const barWidth = this.periodChartType === 'wide' ? pw / (N * 1.5) : Math.min(22, pw / (N * 1.8));
     const step = pw / N;
 
     // 网格线 & Y轴标签
@@ -2289,7 +2305,7 @@ const App = {
     // X轴基线
     grid += '<line x1="'+pad.left+'" y1="'+(pad.top+ph).toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+(pad.top+ph).toFixed(1)+'" stroke="#d8d8d8" stroke-width="1"/>';
 
-    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-height:400px;display:block">' +
+    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">' +
       grid + yLabels + refLines + bars + xLabels + topLabels + earlinessTags +
     '</svg>';
   },
