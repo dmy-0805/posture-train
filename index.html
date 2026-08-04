@@ -251,6 +251,104 @@ body{
 .plan-action-btn{border:none;border-radius:6px;padding:8px 12px;font-size:12px;cursor:pointer;font-family:inherit;min-height:36px;white-space:nowrap}
 .plan-action-btn.video{background:var(--primary);color:#fff}
 .plan-action-btn.detail{background:#fff;color:var(--text-2);border:1px solid var(--border)}
+/* 今天勾选框 */
+.today-checkin{
+  width:22px;height:22px;border:2px solid var(--border-2);border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;background:#fff;flex-shrink:0;
+}
+.today-checkin.checked{background:var(--success);border-color:var(--success)}
+.today-checkin.locked{cursor:not-allowed;opacity:.4}
+.today-checkin svg{opacity:0;transition:opacity .15s}
+.today-checkin.checked svg{opacity:1}
+/* 录入新计划按钮 */
+.plan-input-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;padding:12px;border:1px dashed var(--border-2);border-radius:var(--radius);
+  background:var(--card);color:var(--text-2);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all .15s;font-family:inherit;margin-bottom:16px;
+}
+.plan-input-btn:hover{background:var(--bg);border-color:var(--primary);color:var(--text)}
+/* 历史计划 */
+.history-section{margin-top:8px}
+.history-toggle{
+  display:flex;align-items:center;gap:6px;width:100%;padding:12px;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  cursor:pointer;font-size:14px;font-weight:500;color:var(--text-2);
+  font-family:inherit;transition:all .15s;
+}
+.history-toggle:hover{background:var(--bg)}
+.history-toggle .arrow{transition:transform .2s;margin-left:auto}
+.history-toggle.open .arrow{transform:rotate(90deg)}
+.history-body{display:none;margin-top:8px}
+.history-body.open{display:block}
+.history-item{
+  background:var(--card);border-radius:var(--radius-sm);padding:12px 14px;
+  margin-bottom:8px;border:1px solid var(--border);
+}
+.history-item-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.history-item-time{font-size:13px;color:var(--text-2);font-weight:500}
+.history-restore-btn{
+  border:1px solid var(--border-2);background:#fff;color:var(--text-2);
+  border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;
+  font-family:inherit;transition:all .15s;
+}
+.history-restore-btn:hover{border-color:var(--primary);color:var(--text)}
+.history-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
+.history-detail.open{display:block}
+.history-day-row{padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.history-day-row:last-child{border-bottom:none}
+.history-day-name{display:inline-block;background:var(--bg);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--text-2);margin-right:6px}
+.history-day-title{color:var(--text)}
+.history-empty{text-align:center;padding:20px;color:var(--text-3);font-size:13px}
+/* 训练日历 */
+.calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.calendar-nav{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-2);font-size:16px;
+}
+.calendar-nav:hover{background:var(--bg)}
+.calendar-title{font-size:16px;font-weight:600}
+.calendar-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
+  background:var(--card);border-radius:var(--radius);padding:8px;box-shadow:var(--shadow);
+}
+.calendar-weekday{text-align:center;font-size:12px;color:var(--text-3);padding:6px 0;font-weight:500}
+.calendar-cell{
+  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:6px;font-size:13px;color:var(--text);background:var(--bg);cursor:pointer;
+  transition:all .15s;position:relative;min-height:44px;
+}
+.calendar-cell:hover{background:var(--border)}
+.calendar-cell.other-month{color:var(--text-3);opacity:.4;cursor:default}
+.calendar-cell.other-month:hover{background:var(--bg)}
+.calendar-cell.today{border:2px solid var(--primary)}
+.calendar-cell.completed{background:var(--success);color:#fff}
+.calendar-cell.completed:hover{background:#16a34a}
+.calendar-cell .cell-dot{width:4px;height:4px;border-radius:50%;background:var(--success);margin-top:2px}
+.calendar-cell.completed .cell-dot{background:#fff}
+.calendar-cell.selected{box-shadow:0 0 0 2px var(--primary) inset}
+.calendar-detail{
+  background:var(--card);border-radius:var(--radius);padding:14px;margin-top:12px;
+  box-shadow:var(--shadow);display:none;
+}
+.calendar-detail.show{display:block}
+.calendar-detail-title{font-size:14px;font-weight:600;margin-bottom:8px}
+.calendar-detail-empty{color:var(--text-3);font-size:13px;text-align:center;padding:12px 0}
+/* 录入模态框 */
+.plan-input-modal{max-width:480px;width:100%}
+.plan-input-textarea{
+  width:100%;min-height:240px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:13px;font-family:monospace;background:#fff;color:var(--text);outline:none;resize:vertical;
+  line-height:1.6;
+}
+.plan-input-textarea:focus{border-color:var(--primary)}
+.plan-input-format-toggle{
+  margin-top:8px;font-size:12px;color:var(--primary);cursor:pointer;font-family:inherit;
+}
+.plan-input-format-hint{display:none;margin-top:6px;white-space:pre-wrap;line-height:1.6;font-size:12px;color:var(--text-3);background:var(--bg);padding:10px;border-radius:6px}
+.plan-input-format-hint.open{display:block}
 @media(max-width:480px){
   #app{padding:12px}
   .header h1{font-size:20px}
@@ -290,6 +388,7 @@ body{
   <nav class="tabs">
     <button class="tab active" data-tab="plan">训练计划</button>
     <button class="tab" data-tab="body">身体数据</button>
+    <button class="tab" data-tab="calendar">训练日历</button>
   </nav>
 
   <!-- 训练计划 -->
@@ -303,7 +402,21 @@ body{
       <div id="todayList"></div>
     </div>
 
+    <button class="plan-input-btn" id="planInputBtn">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      录入新计划
+    </button>
     <div id="planList"></div>
+    <div class="history-section">
+      <button class="history-toggle" id="historyToggle">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+        历史计划
+        <span class="arrow">›</span>
+      </button>
+      <div class="history-body" id="historyBody">
+        <div id="historyList"></div>
+      </div>
+    </div>
     <div class="habits-section">
       <div class="section-title">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -381,6 +494,23 @@ body{
     <div id="bodyList"></div>
   </section>
 
+  <!-- 训练日历 -->
+  <section id="calendarTab" class="tab-content">
+    <div class="card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        训练日历
+      </div>
+      <div class="calendar-header">
+        <button class="calendar-nav" id="calPrev">‹</button>
+        <span class="calendar-title" id="calTitle"></span>
+        <button class="calendar-nav" id="calNext">›</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-detail" id="calendarDetail"></div>
+    </div>
+  </section>
+
   <!-- 底部设置 -->
   <div class="footer-section">
     <div class="card">
@@ -410,6 +540,36 @@ body{
     <div class="modal-actions">
       <button class="btn btn-outline" id="modalCancel">取消</button>
       <button class="btn btn-danger" id="modalConfirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 录入计划弹窗 -->
+<div class="modal-overlay hidden" id="planInputOverlay">
+  <div class="modal plan-input-modal">
+    <h3>录入新计划</h3>
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">粘贴整周计划，保存后当前计划将自动归档到历史记录</p>
+    <textarea class="plan-input-textarea" id="planInputText" placeholder="周一｜肩颈矫正 + 改善高低溜肩（20min）
+对应跟练视频：20 分钟上半身姿态改善｜薄背开肩...
+链接：https://www.bilibili.com/video/BV1uSTM64EsE/
+
+周二｜O 型腿 + 假胯宽矫正（20min）
+对应跟练视频：20min 臀腿普拉提｜改善假胯宽...
+链接：https://www.bilibili.com/video/BV1SkXSBHETX/
+
+...（共7天）"></textarea>
+    <button class="plan-input-format-toggle" id="planFormatToggle">查看格式说明</button>
+    <div class="plan-input-format-hint" id="planFormatHint">每天 3 行，天与天之间空行分隔：
+
+第 1 行：周X｜标题（时长）
+第 2 行：对应跟练视频：视频标题
+第 3 行：链接：https://www.bilibili.com/video/BVxxxxx/
+
+休息日可只写第 1 行，示例：
+周日｜休息日</div>
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn btn-outline" id="planInputCancel">取消</button>
+      <button class="btn btn-primary" id="planInputSave">保存并替换当前</button>
     </div>
   </div>
 </div>
@@ -484,16 +644,19 @@ const DAILY_HABITS = [
   '久坐每 40 分钟，做 1 分钟沉肩收下巴，缓解脖子肩膀痛'
 ];
 const App = {
-  records: [], bodyData: [], types: [],
+  records: [], bodyData: [], types: [], planData: [], checkins: {},
   currentTab: 'plan',
   bfMode: 'manual',
   isSample: true,
+  calendarMonth: null,
 
   KEYS: {
     records: 'wb_fitness_records',
     body: 'wb_fitness_body',
     types: 'wb_fitness_types',
-    meta: 'wb_fitness_meta'
+    meta: 'wb_fitness_meta',
+    plans: 'wb_fitness_plans',
+    checkins: 'wb_fitness_checkins'
   },
 
   init() {
@@ -510,12 +673,17 @@ const App = {
     this.records = JSON.parse(localStorage.getItem(this.KEYS.records) || '[]');
     this.bodyData = JSON.parse(localStorage.getItem(this.KEYS.body) || '[]');
     this.types = JSON.parse(localStorage.getItem(this.KEYS.types) || '[]');
+    this.planData = JSON.parse(localStorage.getItem(this.KEYS.plans) || '[]');
+    this.checkins = JSON.parse(localStorage.getItem(this.KEYS.checkins) || '{}');
     const meta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
     this.isSample = meta.isSample !== false;
 
     if (this.types.length === 0) {
       this.types = ['体态训练','跑步','瑜伽','力量训练','骑行','拉伸放松'];
       this.saveTypes();
+    }
+    if (this.planData.length === 0) {
+      this.initDefaultPlan();
     }
     if (this.bodyData.length === 0 && this.isSample) {
       this.loadSampleData();
@@ -542,6 +710,22 @@ const App = {
     localStorage.setItem(this.KEYS.records, JSON.stringify(this.records));
     localStorage.setItem(this.KEYS.body, JSON.stringify(this.bodyData));
     localStorage.setItem(this.KEYS.meta, JSON.stringify({ isSample: this.isSample }));
+  },
+  savePlans() {
+    localStorage.setItem(this.KEYS.plans, JSON.stringify(this.planData));
+  },
+  saveCheckins() {
+    localStorage.setItem(this.KEYS.checkins, JSON.stringify(this.checkins));
+  },
+  initDefaultPlan() {
+    var days = WEEKLY_PLAN.map(function(p) {
+      return { day: p.day, dayName: p.dayName, title: p.title, duration: p.duration, videoTitle: p.videoTitle, bvid: p.bvid };
+    });
+    this.planData = [{ id: this.uid(), createdAt: Date.now(), days: days }];
+    this.savePlans();
+  },
+  getCurrentPlan() {
+    return this.planData[this.planData.length - 1] || null;
   },
   saveTypes() {
     localStorage.setItem(this.KEYS.types, JSON.stringify(this.types));
@@ -644,9 +828,11 @@ const App = {
   renderAll() {
     this.renderToday();
     this.renderPlan();
+    this.renderHistory();
     this.renderHabits();
     this.renderBodyData();
     this.renderTypeManage();
+    this.renderCalendar();
   },
 
   renderTypeManage() {
@@ -689,8 +875,15 @@ const App = {
       return;
     }
 
+    const today = this.getToday();
+    const isChecked = !!this.checkins[today];
     const isRest = plan.day === 6 || plan.day === 0;
+    const checkinCls = isChecked ? ' checked' : '';
+
     container.innerHTML = '<div class="today-plan-card">' +
+      '<div class="today-checkin' + checkinCls + '" id="todayCheckin">' +
+        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+      '</div>' +
       '<span class="today-plan-day">' + plan.dayName + ' · 今天</span>' +
       '<div class="today-plan-info">' +
         '<div class="today-plan-title">' + this.escapeHtml(plan.title) + '</div>' +
@@ -698,6 +891,11 @@ const App = {
       '</div>' +
       (plan.bvid ? '<a class="plan-action-btn video" href="https://www.bilibili.com/video/' + plan.bvid + '/" target="_blank" rel="noopener">跟练</a>' : '') +
     '</div>';
+
+    const checkinBtn = container.querySelector('#todayCheckin');
+    if (checkinBtn) {
+      checkinBtn.onclick = () => this.toggleCheckin(today);
+    }
 
     const btn = container.querySelector('.plan-action-btn.video');
     if (btn) {
@@ -933,8 +1131,10 @@ const App = {
       bodyData: this.bodyData,
       types: this.types,
       meta: meta,
+      planData: this.planData,
+      checkins: this.checkins,
       exportDate: new Date().toISOString(),
-      version: 4
+      version: 5
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -959,9 +1159,13 @@ const App = {
           if (data.bodyData) this.bodyData = data.bodyData;
           if (data.types) this.types = data.types;
           if (data.meta) localStorage.setItem(this.KEYS.meta, JSON.stringify(data.meta));
+          if (data.planData) this.planData = data.planData;
+          if (data.checkins) this.checkins = data.checkins;
           this.isSample = false;
           this.saveAll();
           this.saveTypes();
+          this.savePlans();
+          this.saveCheckins();
           this.loadProfile();
           this.renderAll();
           this.checkReminder();
@@ -1018,38 +1222,36 @@ const App = {
   // ===== 训练计划 =====
   getTodayPlan() {
     const day = new Date().getDay();
-    return WEEKLY_PLAN.find(p => p.day === day) || null;
+    const plan = this.getCurrentPlan();
+    if (!plan) return null;
+    return plan.days.find(d => d.day === day) || null;
   },
 
   renderPlan() {
     const container = document.getElementById('planList');
     const today = new Date().getDay();
-    container.innerHTML = WEEKLY_PLAN.map(p => {
+    const plan = this.getCurrentPlan();
+    if (!plan) {
+      container.innerHTML = '<div class="empty-state">暂无训练计划</div>';
+      return;
+    }
+    container.innerHTML = plan.days.map(p => {
       const isToday = p.day === today;
-
-      const focusHtml = p.focus
-        ? '<div class="plan-focus">' +
-            '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
-            '<span>' + this.escapeHtml(p.focus) + '</span>' +
-          '</div>'
-        : '';
-
       return '<div class="plan-day' + (isToday ? ' today' : '') + '">' +
         '<div class="plan-day-header">' +
           '<div class="plan-day-label">' +
             '<span class="day-badge">' + p.dayName + (isToday ? ' · 今天' : '') + '</span>' +
             '<span class="plan-day-title">' + this.escapeHtml(p.title) + '</span>' +
           '</div>' +
-          (p.duration ? '<span class="plan-duration">' + p.duration + '</span>' : '') +
+          (p.duration ? '<span class="plan-duration">' + this.escapeHtml(p.duration) + '</span>' : '') +
         '</div>' +
-        '<div class="plan-video-info">' + this.escapeHtml(p.videoTitle) + '</div>' +
+        '<div class="plan-video-info">' + this.escapeHtml(p.videoTitle || '') + '</div>' +
         (p.bvid ? '<a class="plan-video-wrapper" href="https://www.bilibili.com/video/' + p.bvid + '/" target="_blank" rel="noopener">' +
           '<div class="plan-video-cover">' +
             '<div class="play-circle"><svg viewBox="0 0 24 24" width="24" height="24" fill="#1a1a1a"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>' +
             '<div class="cover-text">点击跳转 B 站播放跟练视频</div>' +
           '</div>' +
         '</a>' : '') +
-        focusHtml +
       '</div>';
     }).join('');
   },
@@ -1059,6 +1261,228 @@ const App = {
     container.innerHTML = DAILY_HABITS.map((h, i) =>
       '<li><span class="habits-num">' + (i+1) + '</span><span>' + this.escapeHtml(h) + '</span></li>'
     ).join('');
+  },
+
+  // ===== 计划录入与解析 =====
+  parsePlanText(text) {
+    var dayMap = { '周一':1, '周二':2, '周三':3, '周四':4, '周五':5, '周六':6, '周日':0 };
+    var blocks = text.trim().split(/\n\s*\n/);
+    var days = [];
+    var errors = [];
+    blocks.forEach(function(block, idx) {
+      var lines = block.trim().split('\n').filter(function(l) { return l.trim(); });
+      if (lines.length === 0) return;
+      var line1 = lines[0].trim();
+      var dayMatch = line1.match(/^周[一二三四五六日]/);
+      if (!dayMatch) { errors.push('第'+(idx+1)+'块：找不到星期'); return; }
+      var dayName = dayMatch[0];
+      var day = dayMap[dayName];
+      var rest = line1.substring(dayName.length).replace(/^[｜|]\s*/, '');
+      var title = rest, duration = '';
+      var durMatch = rest.match(/[（(]([^）)]*)[）)]\s*$/);
+      if (durMatch) {
+        duration = durMatch[1].trim();
+        title = rest.replace(/[（(][^）)]*[）)]\s*$/, '').trim();
+      }
+      var videoTitle = '', bvid = '';
+      if (lines.length >= 2) {
+        var line2 = lines[1].trim();
+        var vtMatch = line2.match(/^对应跟练视频[：:]\s*(.*)$/);
+        if (vtMatch) videoTitle = vtMatch[1].trim();
+      }
+      if (lines.length >= 3) {
+        var line3 = lines[2].trim();
+        var linkMatch = line3.match(/^链接[：:]\s*(.*)$/);
+        if (linkMatch) {
+          var url = linkMatch[1].trim();
+          var bvMatch = url.match(/(BV[\w]+)/);
+          if (bvMatch) bvid = bvMatch[1];
+        }
+      }
+      days.push({ day: day, dayName: dayName, title: title, duration: duration, videoTitle: videoTitle, bvid: bvid });
+    });
+    days.sort(function(a, b) { return (a.day === 0 ? 7 : a.day) - (b.day === 0 ? 7 : b.day); });
+    if (errors.length > 0) return { error: errors.join('; ') };
+    if (days.length === 0) return { error: '未解析到任何计划内容' };
+    return { days: days };
+  },
+
+  showPlanInputModal() {
+    document.getElementById('planInputOverlay').classList.remove('hidden');
+    document.getElementById('planInputText').value = '';
+  },
+  hidePlanInputModal() {
+    document.getElementById('planInputOverlay').classList.add('hidden');
+  },
+  saveNewPlan() {
+    var text = document.getElementById('planInputText').value.trim();
+    if (!text) { this.toast('请粘贴计划内容'); return; }
+    var result = this.parsePlanText(text);
+    if (result.error) { this.toast('解析失败：' + result.error); return; }
+    if (result.days.length < 7) { this.toast('只解析到 ' + result.days.length + ' 天，需要 7 天'); return; }
+    var newPlan = { id: this.uid(), createdAt: Date.now(), days: result.days };
+    this.planData.push(newPlan);
+    this.savePlans();
+    this.hidePlanInputModal();
+    this.renderPlan();
+    this.renderToday();
+    this.renderHistory();
+    this.renderCalendar();
+    this.toast('新计划已保存，旧计划已归档');
+  },
+  restorePlan(id) {
+    var plan = this.planData.find(function(p) { return p.id === id; });
+    if (!plan) return;
+    this.showModal('恢复历史计划', '将把该计划设为当前计划，当前计划会自动归档。确定继续吗？', () => {
+      this.planData = this.planData.filter(function(p) { return p.id !== id; });
+      this.planData.push(plan);
+      this.savePlans();
+      this.renderPlan();
+      this.renderToday();
+      this.renderHistory();
+      this.renderCalendar();
+      this.toast('已恢复为当前计划');
+    });
+  },
+
+  // ===== 历史计划渲染 =====
+  renderHistory() {
+    var container = document.getElementById('historyList');
+    if (!container) return;
+    if (this.planData.length <= 1) {
+      container.innerHTML = '<div class="history-empty">暂无历史计划</div>';
+      return;
+    }
+    var history = this.planData.slice(0, -1).reverse();
+    var self = this;
+    container.innerHTML = history.map(function(plan) {
+      var dt = new Date(plan.createdAt);
+      var time = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0') + ' ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+      var daysHtml = plan.days.map(function(d) {
+        return '<div class="history-day-row"><span class="history-day-name">' + d.dayName + '</span><span class="history-day-title">' + self.escapeHtml(d.title) + '</span></div>';
+      }).join('');
+      return '<div class="history-item">' +
+        '<div class="history-item-header">' +
+          '<span class="history-item-time" data-id="' + plan.id + '" style="cursor:pointer">' + time + ' · 点击查看详情</span>' +
+          '<button class="history-restore-btn" data-id="' + plan.id + '">恢复为当前</button>' +
+        '</div>' +
+        '<div class="history-detail" id="historyDetail_' + plan.id + '">' + daysHtml + '</div>' +
+      '</div>';
+    }).join('');
+    container.querySelectorAll('.history-item-time').forEach(function(el) {
+      el.onclick = function() {
+        var detail = document.getElementById('historyDetail_' + el.dataset.id);
+        if (detail) detail.classList.toggle('open');
+      };
+    });
+    container.querySelectorAll('.history-restore-btn').forEach(function(btn) {
+      btn.onclick = function() { self.restorePlan(btn.dataset.id); };
+    });
+  },
+
+  // ===== 打卡 =====
+  toggleCheckin(date) {
+    if (date !== this.getToday()) {
+      this.toast('过去的记录不可修改');
+      return;
+    }
+    if (this.checkins[date]) {
+      delete this.checkins[date];
+      this.toast('已取消今日打卡');
+    } else {
+      var plan = this.getTodayPlan();
+      var curPlan = this.getCurrentPlan();
+      this.checkins[date] = {
+        planId: curPlan ? curPlan.id : null,
+        day: plan ? plan.day : null,
+        completedAt: Date.now()
+      };
+      this.toast('今日训练打卡成功');
+    }
+    this.saveCheckins();
+    this.renderToday();
+    this.renderCalendar();
+  },
+
+  // ===== 训练日历 =====
+  renderCalendar() {
+    var grid = document.getElementById('calendarGrid');
+    var title = document.getElementById('calTitle');
+    var detail = document.getElementById('calendarDetail');
+    if (!grid) return;
+    var now = new Date();
+    if (!this.calendarMonth) {
+      this.calendarMonth = { year: now.getFullYear(), month: now.getMonth() };
+    }
+    var y = this.calendarMonth.year, m = this.calendarMonth.month;
+    title.textContent = y + '年' + (m + 1) + '月';
+    var weekdays = ['日','一','二','三','四','五','六'];
+    var html = weekdays.map(function(w) { return '<div class="calendar-weekday">' + w + '</div>'; }).join('');
+    var firstDay = new Date(y, m, 1).getDay();
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    var prevMonthDays = new Date(y, m, 0).getDate();
+    var today = this.getToday();
+    var self = this;
+    for (var i = firstDay - 1; i >= 0; i--) {
+      var d = prevMonthDays - i;
+      var py = m === 0 ? y - 1 : y;
+      var pm = m === 0 ? 11 : m - 1;
+      var ds = py + '-' + String(pm + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      var comp = !!this.checkins[ds];
+      html += '<div class="calendar-cell other-month' + (comp ? ' completed' : '') + '"><span class="cell-day">' + d + '</span>' + (comp ? '<span class="cell-dot"></span>' : '') + '</div>';
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var ds = y + '-' + String(m + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      var comp = !!this.checkins[ds];
+      var isToday = ds === today;
+      var cls = 'calendar-cell';
+      if (comp) cls += ' completed';
+      if (isToday) cls += ' today';
+      html += '<div class="' + cls + '" data-date="' + ds + '"><span class="cell-day">' + d + '</span>' + (comp ? '<span class="cell-dot"></span>' : '') + '</div>';
+    }
+    var totalCells = firstDay + daysInMonth;
+    var remaining = (7 - (totalCells % 7)) % 7;
+    for (var i = 1; i <= remaining; i++) {
+      var ny = m === 11 ? y + 1 : y;
+      var nm = m === 11 ? 0 : m + 1;
+      var ds = ny + '-' + String(nm + 1).padStart(2,'0') + '-' + String(i).padStart(2,'0');
+      var comp = !!this.checkins[ds];
+      html += '<div class="calendar-cell other-month' + (comp ? ' completed' : '') + '"><span class="cell-day">' + i + '</span>' + (comp ? '<span class="cell-dot"></span>' : '') + '</div>';
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll('.calendar-cell:not(.other-month)').forEach(function(cell) {
+      cell.onclick = function() {
+        grid.querySelectorAll('.calendar-cell').forEach(function(c) { c.classList.remove('selected'); });
+        cell.classList.add('selected');
+        var dateStr = cell.dataset.date;
+        var checkin = self.checkins[dateStr];
+        if (checkin) {
+          var plan = self.planData.find(function(p) { return p.id === checkin.planId; });
+          var dayInfo = plan ? plan.days.find(function(d) { return d.day === checkin.day; }) : null;
+          var dt = new Date(checkin.completedAt);
+          var timeStr = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0') + ' ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+          detail.innerHTML = '<div class="calendar-detail-title">' + dateStr + ' 训练记录</div>' +
+            (dayInfo ? '<div style="font-size:14px;font-weight:600;margin-bottom:4px">' + self.escapeHtml(dayInfo.title) + '</div>' +
+              '<div style="font-size:13px;color:var(--text-2)">' + self.escapeHtml(dayInfo.duration || '') + '</div>' : '<div class="calendar-detail-empty">已完成训练</div>') +
+            '<div style="font-size:12px;color:var(--text-3);margin-top:8px">打卡时间：' + timeStr + '</div>';
+        } else {
+          detail.innerHTML = '<div class="calendar-detail-title">' + dateStr + '</div><div class="calendar-detail-empty">当天未打卡</div>';
+        }
+        detail.classList.add('show');
+      };
+    });
+  },
+  calendarPrev() {
+    if (!this.calendarMonth) return;
+    if (this.calendarMonth.month === 0) { this.calendarMonth.month = 11; this.calendarMonth.year--; }
+    else { this.calendarMonth.month--; }
+    this.renderCalendar();
+  },
+  calendarNext() {
+    if (!this.calendarMonth) return;
+    if (this.calendarMonth.month === 11) { this.calendarMonth.month = 0; this.calendarMonth.year++; }
+    else { this.calendarMonth.month++; }
+    this.renderCalendar();
   },
 
   // ===== UI =====
@@ -1130,6 +1554,24 @@ const App = {
     document.getElementById('modalOverlay').onclick = (e) => {
       if (e.target.id === 'modalOverlay') this.hideModal();
     };
+    // 录入新计划
+    document.getElementById('planInputBtn').onclick = () => this.showPlanInputModal();
+    document.getElementById('planInputCancel').onclick = () => this.hidePlanInputModal();
+    document.getElementById('planInputSave').onclick = () => this.saveNewPlan();
+    document.getElementById('planInputOverlay').onclick = (e) => {
+      if (e.target.id === 'planInputOverlay') this.hidePlanInputModal();
+    };
+    document.getElementById('planFormatToggle').onclick = () => {
+      document.getElementById('planFormatHint').classList.toggle('open');
+    };
+    // 历史计划折叠
+    document.getElementById('historyToggle').onclick = () => {
+      document.getElementById('historyToggle').classList.toggle('open');
+      document.getElementById('historyBody').classList.toggle('open');
+    };
+    // 训练日历
+    document.getElementById('calPrev').onclick = () => this.calendarPrev();
+    document.getElementById('calNext').onclick = () => this.calendarNext();
   }
 };
 
