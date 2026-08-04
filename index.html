@@ -261,6 +261,10 @@ body{
 .today-checkin.locked{cursor:not-allowed;opacity:.4}
 .today-checkin svg{opacity:0;transition:opacity .15s}
 .today-checkin.checked svg{opacity:1}
+.today-plan-card.checked .today-plan-info .today-plan-title,
+.today-plan-card.checked .today-plan-info .today-plan-meta{
+  text-decoration:line-through;opacity:.55;
+}
 /* 录入新计划按钮 */
 .plan-input-btn{
   display:flex;align-items:center;justify-content:center;gap:6px;
@@ -395,17 +399,19 @@ body{
   <section id="planTab" class="tab-content active">
     <!-- 今天要处理 -->
     <div class="today-section">
-      <h2>
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        今天要处理
-      </h2>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <h2 style="margin-bottom:0">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          今天要处理
+        </h2>
+        <button class="plan-input-btn" id="planInputBtn" style="margin-bottom:0;padding:6px 12px;width:auto;min-height:32px;font-size:13px;gap:4px">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          录入新计划
+        </button>
+      </div>
       <div id="todayList"></div>
     </div>
 
-    <button class="plan-input-btn" id="planInputBtn">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      录入新计划
-    </button>
     <div id="planList"></div>
     <div class="history-section">
       <button class="history-toggle" id="historyToggle">
@@ -879,8 +885,9 @@ const App = {
     const isChecked = !!this.checkins[today];
     const isRest = plan.day === 6 || plan.day === 0;
     const checkinCls = isChecked ? ' checked' : '';
+    const cardCls = isChecked ? ' checked' : '';
 
-    container.innerHTML = '<div class="today-plan-card">' +
+    container.innerHTML = '<div class="today-plan-card' + cardCls + '">' +
       '<div class="today-checkin' + checkinCls + '" id="todayCheckin">' +
         '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
       '</div>' +
@@ -1235,7 +1242,13 @@ const App = {
       container.innerHTML = '<div class="empty-state">暂无训练计划</div>';
       return;
     }
-    container.innerHTML = plan.days.map(p => {
+    var days = plan.days.slice();
+    var todayIdx = days.findIndex(d => d.day === today);
+    if (todayIdx >= 0) {
+      var todayItem = days.splice(todayIdx, 1)[0];
+      days.unshift(todayItem);
+    }
+    const renderDay = p => {
       const isToday = p.day === today;
       return '<div class="plan-day' + (isToday ? ' today' : '') + '">' +
         '<div class="plan-day-header">' +
@@ -1253,7 +1266,8 @@ const App = {
           '</div>' +
         '</a>' : '') +
       '</div>';
-    }).join('');
+    };
+    container.innerHTML = days.map(renderDay).join('');
   },
 
   renderHabits() {
