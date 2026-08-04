@@ -261,6 +261,7 @@ body{
 .today-checkin.locked{cursor:not-allowed;opacity:.4}
 .today-checkin svg{opacity:0;transition:opacity .15s}
 .today-checkin.checked svg{opacity:1}
+.today-plan-card.checked .today-plan-day,
 .today-plan-card.checked .today-plan-info .today-plan-title,
 .today-plan-card.checked .today-plan-info .today-plan-meta{
   text-decoration:line-through;opacity:.55;
@@ -1280,18 +1281,17 @@ const App = {
   // ===== 计划录入与解析 =====
   parsePlanText(text) {
     var dayMap = { '周一':1, '周二':2, '周三':3, '周四':4, '周五':5, '周六':6, '周日':0 };
-    var blocks = text.trim().split(/\n\s*\n/);
+    var lines = text.trim().split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l; });
     var days = [];
     var errors = [];
-    blocks.forEach(function(block, idx) {
-      var lines = block.trim().split('\n').filter(function(l) { return l.trim(); });
-      if (lines.length === 0) return;
-      var line1 = lines[0].trim();
-      var dayMatch = line1.match(/^周[一二三四五六日]/);
-      if (!dayMatch) { errors.push('第'+(idx+1)+'块：找不到星期'); return; }
-      var dayName = dayMatch[0];
+    var i = 0;
+    while (i < lines.length) {
+      var line = lines[i];
+      var dayMatch = line.match(/^(周[一二三四五六日])/);
+      if (!dayMatch) { i++; continue; }
+      var dayName = dayMatch[1];
       var day = dayMap[dayName];
-      var rest = line1.substring(dayName.length).replace(/^[｜|]\s*/, '');
+      var rest = line.substring(dayName.length).replace(/^[｜|]\s*/, '');
       var title = rest, duration = '';
       var durMatch = rest.match(/[（(]([^）)]*)[）)]\s*$/);
       if (durMatch) {
@@ -1299,24 +1299,26 @@ const App = {
         title = rest.replace(/[（(][^）)]*[）)]\s*$/, '').trim();
       }
       var videoTitle = '', bvid = '';
-      if (lines.length >= 2) {
-        var line2 = lines[1].trim();
-        var vtMatch = line2.match(/^对应跟练视频[：:]\s*(.*)$/);
-        if (vtMatch) videoTitle = vtMatch[1].trim();
+      if (i + 1 < lines.length) {
+        var next = lines[i + 1];
+        if (!next.match(/^周[一二三四五六日]/) && next.match(/^对应跟练视频[：:]/)) {
+          videoTitle = next.replace(/^对应跟练视频[：:]\s*/, '');
+          i++;
+        }
       }
-      if (lines.length >= 3) {
-        var line3 = lines[2].trim();
-        var linkMatch = line3.match(/^链接[：:]\s*(.*)$/);
-        if (linkMatch) {
-          var url = linkMatch[1].trim();
+      if (i + 1 < lines.length) {
+        var next2 = lines[i + 1];
+        if (!next2.match(/^周[一二三四五六日]/) && next2.match(/^链接[：:]/)) {
+          var url = next2.replace(/^链接[：:]\s*/, '');
           var bvMatch = url.match(/(BV[\w]+)/);
           if (bvMatch) bvid = bvMatch[1];
+          i++;
         }
       }
       days.push({ day: day, dayName: dayName, title: title, duration: duration, videoTitle: videoTitle, bvid: bvid });
-    });
+      i++;
+    }
     days.sort(function(a, b) { return (a.day === 0 ? 7 : a.day) - (b.day === 0 ? 7 : b.day); });
-    if (errors.length > 0) return { error: errors.join('; ') };
     if (days.length === 0) return { error: '未解析到任何计划内容' };
     return { days: days };
   },
