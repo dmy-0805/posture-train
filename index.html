@@ -445,12 +445,12 @@ body{
 .legend-dot.period-ovulation{background:#f59e0b}
 .legend-dot.period-predicted{background:#ff6b8a;border:2px dashed #fff;box-shadow:0 0 0 1px #ff6b8a}
 .legend-dot.period-menstrual-sm{width:10px;height:10px;border-radius:2px}
-.period-year-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.period-mini-month{background:var(--bg);border-radius:var(--radius-sm);padding:8px}
-.period-mini-month-title{font-size:14px;font-weight:600;margin-bottom:6px;text-align:center}
-.period-mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
-.period-mini-wd{font-size:10px;color:var(--text-3);text-align:center;padding:2px 0}
-.period-mini-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;border-radius:4px;cursor:default;position:relative}
+.period-year-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.period-mini-month{background:var(--bg);border-radius:var(--radius-sm);padding:12px}
+.period-mini-month-title{font-size:16px;font-weight:700;margin-bottom:8px;text-align:center}
+.period-mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.period-mini-wd{font-size:12px;color:var(--text-3);text-align:center;padding:4px 0;font-weight:600}
+.period-mini-cell{min-height:28px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;border-radius:6px;cursor:default;position:relative;font-weight:500}
 .period-mini-cell.other-month{color:var(--text-3);opacity:.3}
 .period-mini-cell.menstrual{background:#ff6b8a;color:#fff;font-weight:600}
 .period-mini-cell.ovulation{background:#f59e0b;color:#fff;font-weight:600}
@@ -486,43 +486,43 @@ body{
 .period-month-label{font-size:18px;font-weight:700;color:var(--text)}
 .period-month-nav{background:transparent;border:none;cursor:pointer;padding:4px 8px;font-size:20px;color:var(--text-2);font-family:inherit;border-radius:6px;transition:background .15s}
 .period-month-nav:hover{background:var(--bg);color:var(--text)}
-.period-month-title{font-size:22px;font-weight:700;color:var(--text);margin-left:auto}
-.period-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
-.period-weekdays span{font-size:11px;font-weight:600;color:var(--text-3);text-align:center}
-.period-month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.period-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;border-radius:10px;cursor:pointer;transition:transform .12s, box-shadow .12s;position:relative;user-select:none}
-.period-day:hover{transform:scale(1.08)}
+.period-month-title{font-size:24px;font-weight:700;color:var(--text);margin-left:auto}
+.period-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px}
+.period-weekdays span{font-size:13px;font-weight:600;color:var(--text-3);text-align:center;padding:4px 0}
+.period-month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.period-day{aspect-ratio:1;min-height:44px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;border-radius:12px;cursor:pointer;transition:transform .12s, box-shadow .12s;position:relative;user-select:none}
+.period-day:hover{transform:scale(1.05)}
 .period-day.other-month{color:var(--text-3);opacity:.35}
-.period-day.today{outline:2px solid #ff6b8a;outline-offset:-2px;font-weight:700}
+.period-day.today{outline:3px solid #ff6b8a;outline-offset:-3px;font-weight:700}
 .period-day.menstrual{background:#ff6b8a;color:#fff}
-.period-day.predicted{background:#fff;border:2px dashed #ff6b8a;color:#ff6b8a}
+.period-day.predicted{background:#fff;border:3px dashed #ff6b8a;color:#ff6b8a}
 .period-day.ovulation{background:#f59e0b;color:#fff}
-.period-day.predicted-ovulation{background:#fff;border:2px dashed #f59e0b;color:#f59e0b}
-.period-day.selected{box-shadow:0 0 0 2px #1a1a1a,0 2px 8px rgba(0,0,0,.15);z-index:2}
-.period-day .day-label{font-size:13px}
-.period-day .day-tag{position:absolute;top:1px;right:2px;font-size:8px;color:rgba(255,255,255,.9);line-height:1}
-.period-record-legend{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap;font-size:12px;color:var(--text-2)}
+.period-day.predicted-ovulation{background:#fff;border:3px dashed #f59e0b;color:#f59e0b}
+.period-day.selected{box-shadow:0 0 0 3px #1a1a1a,0 2px 8px rgba(0,0,0,.15);z-index:2}
+.period-day .day-label{font-size:15px}
+.period-day .day-tag{position:absolute;top:2px;right:4px;font-size:10px;color:rgba(255,255,255,.95);line-height:1}
+.period-record-legend{display:flex;gap:18px;justify-content:center;margin-top:18px;flex-wrap:wrap;font-size:14px;color:var(--text-2)}
 .legend-menstrual{background:#ff6b8a}
 .legend-predicted-period{background:#fff;border:2px solid #ff6b8a;box-shadow:inset 0 0 0 1px #fff}
 .legend-ovulation{background:#f59e0b}
 .legend-predicted-ovu{background:#fff;border:2px solid #f59e0b}
-.period-record-panel{background:var(--card);border-radius:var(--radius);padding:16px;margin-top:12px;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
-.period-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.period-selected-date{font-size:20px;font-weight:700;color:var(--text)}
-.period-panel-menu{background:transparent;border:none;cursor:pointer;color:var(--text-3);padding:4px;border-radius:6px}
+.period-record-panel{background:var(--card);border-radius:var(--radius);padding:18px;margin-top:14px;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
+.period-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.period-selected-date{font-size:22px;font-weight:700;color:var(--text)}
+.period-panel-menu{background:transparent;border:none;cursor:pointer;color:var(--text-3);padding:6px;border-radius:8px;font-size:18px}
 .period-panel-menu:hover{background:var(--bg);color:var(--text)}
 .period-panel-actions{display:flex;align-items:center;justify-content:space-around}
-.period-action-btn{background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;font-family:inherit}
-.period-action-btn span{font-size:13px;color:var(--text-2);font-weight:500}
+.period-action-btn{background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 6px;font-family:inherit}
+.period-action-btn span{font-size:14px;color:var(--text-2);font-weight:500}
 .period-action-btn:hover span{color:var(--text)}
-.action-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .12s}
+.action-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .12s}
 .period-action-btn:hover .action-icon{transform:scale(1.06)}
 .action-start{background:linear-gradient(135deg,#ff6b8a,#ff4060);box-shadow:0 4px 12px rgba(255,107,138,.35)}
 .action-end{background:var(--bg);border:2px solid var(--border);color:var(--text-3)}
 .action-status{background:linear-gradient(135deg,#4fd1c5,#38b2ac);box-shadow:0 4px 12px rgba(79,209,197,.35)}
-.period-action-divider{width:1px;height:40px;background:var(--border)}
-.period-day-flow{position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:#fff;opacity:.7}
-.period-day-pain{position:absolute;top:1px;left:2px;font-size:8px;font-weight:700;color:rgba(255,255,255,.95)}
+.period-action-divider{width:1px;height:46px;background:var(--border)}
+.period-day-flow{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:#fff;opacity:.8}
+.period-day-pain{position:absolute;top:2px;left:4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.98)}
 @media(max-width:768px){
   /* 移动端侧边栏自动折叠为窄条 */
   .sidebar{width:56px;padding:8px}
@@ -2254,8 +2254,8 @@ const App = {
     // 细柱图显示全部周期，宽柱图显示最近12个
     const showCycles = this.periodChartType === 'narrow' ? cycles : cycles.slice(-12);
     const N = showCycles.length;
-    const W = 720, H = 560;
-    const pad = { top: 90, right: 80, bottom: 50, left: 40 };
+    const W = 820, H = 640;
+    const pad = { top: 100, right: 90, bottom: 60, left: 50 };
     const pw = W - pad.left - pad.right;
     const ph = H - pad.top - pad.bottom;
 
@@ -2266,7 +2266,7 @@ const App = {
     const yMin = 0;
     const yRange = yMax - yMin || 1;
 
-    const barWidth = this.periodChartType === 'wide' ? pw / (N * 1.5) : Math.min(22, pw / (N * 1.8));
+    const barWidth = this.periodChartType === 'wide' ? pw / (N * 1.4) : Math.min(28, pw / (N * 1.7));
     const step = pw / N;
 
     // 网格线 & Y轴标签
@@ -2276,7 +2276,7 @@ const App = {
       const val = yMax - (yMax / 4) * i;
       const y = pad.top + (i / 4) * ph;
       grid += '<line x1="'+pad.left+'" y1="'+y.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+y.toFixed(1)+'" stroke="#f0f0f0" stroke-width="1"/>';
-      yLabels += '<text x="'+(pad.left-8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#999" text-anchor="end">'+Math.round(val)+'</text>';
+      yLabels += '<text x="'+(pad.left-10)+'" y="'+(y+5).toFixed(1)+'" font-size="13" fill="#888" text-anchor="end" font-weight="500">'+Math.round(val)+'</text>';
     }
 
     // 参考线
@@ -2288,17 +2288,16 @@ const App = {
     refLines += '<line x1="'+pad.left+'" y1="'+avgMensesY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgMensesY.toFixed(1)+'" stroke="#ff6b8a" stroke-width="1.5" stroke-dasharray="5,4"/>';
     refLines += '<line x1="'+pad.left+'" y1="'+idealY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+idealY.toFixed(1)+'" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,4"/>';
     refLines += '<line x1="'+pad.left+'" y1="'+avgCycleY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgCycleY.toFixed(1)+'" stroke="#a8d8ea" stroke-width="1.5" stroke-dasharray="5,4"/>';
-    refLines += '<text x="'+(W-pad.right+4)+'" y="'+(avgMensesY+4).toFixed(1)+'" font-size="11" fill="#ff6b8a">平均经期</text>';
-    refLines += '<text x="'+(W-pad.right+4)+'" y="'+(idealY+4).toFixed(1)+'" font-size="11" fill="#22c55e">理想周期</text>';
-    refLines += '<text x="'+(W-pad.right+4)+'" y="'+(avgCycleY+4).toFixed(1)+'" font-size="11" fill="#3b82f6">平均周期</text>';
+    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgMensesY+5).toFixed(1)+'" font-size="12" fill="#ff6b8a" font-weight="500">平均经期</text>';
+    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(idealY+5).toFixed(1)+'" font-size="12" fill="#22c55e" font-weight="500">理想周期</text>';
+    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgCycleY+5).toFixed(1)+'" font-size="12" fill="#3b82f6" font-weight="500">平均周期</text>';
 
     // 柱子和标签
     let bars = '';
     let xLabels = '';
     let topLabels = '';
     let earlinessTags = '';
-    // 迟/早标签固定在图表顶部一行（pad.top上方），不跟随柱子高度
-    const earlinessY = pad.top - 30;
+    const earlinessY = pad.top - 34;
 
     showCycles.forEach((c, i) => {
       const cx = pad.left + step * i + step / 2;
@@ -2307,24 +2306,20 @@ const App = {
       const barX = cx - barWidth / 2;
 
       if (cycleDay !== null) {
-        // 周期柱子（蓝色空心圆角柱）
         const cycleH = (cycleDay / yRange) * ph;
         const cycleY = pad.top + ph - cycleH;
-        const r = Math.min(8, barWidth / 2);
-        bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="none" stroke="#a8d8ea" stroke-width="2"/>';
-        bars += '<rect x="'+(barX+2).toFixed(1)+'" y="'+(cycleY+2).toFixed(1)+'" width="'+(barWidth-4).toFixed(1)+'" height="'+(cycleH-4).toFixed(1)+'" rx="'+(r-2)+'" ry="'+(r-2)+'" fill="#e0f2fe" opacity="0.7"/>';
-        // 顶部周期天数（紧跟柱子顶部）
-        topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-6).toFixed(1)+'" font-size="13" fill="#3b82f6" text-anchor="middle" font-weight="600">'+cycleDay+'</text>';
-        // 迟/早标签固定在顶部一行
+        const r = Math.min(10, barWidth / 2);
+        bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="none" stroke="#a8d8ea" stroke-width="2.5"/>';
+        bars += '<rect x="'+(barX+3).toFixed(1)+'" y="'+(cycleY+3).toFixed(1)+'" width="'+(barWidth-6).toFixed(1)+'" height="'+(cycleH-6).toFixed(1)+'" rx="'+(r-3)+'" ry="'+(r-3)+'" fill="#e0f2fe" opacity="0.8"/>';
+        topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-8).toFixed(1)+'" font-size="15" fill="#3b82f6" text-anchor="middle" font-weight="700">'+cycleDay+'</text>';
         const diff = cycleDay - avgCycle;
         if (Math.abs(diff) >= 1) {
           const label = diff > 0 ? '迟' + diff : '早' + Math.abs(diff);
           const color = diff > 0 ? '#f59e0b' : '#f97316';
-          earlinessTags += '<rect x="'+(cx-20).toFixed(1)+'" y="'+earlinessY.toFixed(1)+'" width="40" height="20" rx="4" ry="4" fill="'+color+'" opacity="0.9"/>';
-          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+14).toFixed(1)+'" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">'+label+'</text>';
+          earlinessTags += '<rect x="'+(cx-22).toFixed(1)+'" y="'+earlinessY.toFixed(1)+'" width="44" height="24" rx="5" ry="5" fill="'+color+'" opacity="0.92"/>';
+          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+17).toFixed(1)+'" font-size="12" fill="#fff" text-anchor="middle" font-weight="700">'+label+'</text>';
         }
       } else {
-        // 最后一根：当前周期（白色+蓝色边框）
         const today = this.getToday();
         const lastStart = c.startDate;
         const curDay = this.diffDays(lastStart, today) + 1;
@@ -2332,24 +2327,21 @@ const App = {
           const ch = Math.min(curDay, yMax);
           const cycleH = (ch / yRange) * ph;
           const cycleY = pad.top + ph - cycleH;
-          const r = Math.min(8, barWidth / 2);
-          bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="#fff" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,3"/>';
-          topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-6).toFixed(1)+'" font-size="13" fill="#3b82f6" text-anchor="middle" font-weight="600">当前 '+curDay+'</text>';
+          const r = Math.min(10, barWidth / 2);
+          bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="#fff" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="5,4"/>';
+          topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-8).toFixed(1)+'" font-size="15" fill="#3b82f6" text-anchor="middle" font-weight="700">当前 '+curDay+'</text>';
         }
       }
 
-      // 经期柱子（粉色实心，底部）
       const mensesH = (mensesDay / yRange) * ph;
       const mensesY = pad.top + ph - mensesH;
-      const mr = Math.min(8, barWidth / 2);
+      const mr = Math.min(10, barWidth / 2);
       bars += '<rect x="'+barX.toFixed(1)+'" y="'+mensesY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+mensesH.toFixed(1)+'" rx="'+mr+'" ry="'+mr+'" fill="#ff6b8a"/>';
-      // 经期天数
-      topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(pad.top+ph-4).toFixed(1)+'" font-size="12" fill="#fff" text-anchor="middle" font-weight="600">'+mensesDay+'</text>';
+      topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(pad.top+ph-5).toFixed(1)+'" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">'+mensesDay+'</text>';
 
-      // X轴标签：M.D格式起始日期
       const m = parseInt(c.startDate.slice(5,7));
       const d = parseInt(c.startDate.slice(8,10));
-      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-28).toFixed(1)+'" font-size="11" fill="#666" text-anchor="middle">'+m+'.'+d+'</text>';
+      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-32).toFixed(1)+'" font-size="13" fill="#555" text-anchor="middle" font-weight="500">'+m+'.'+d+'</text>';
     });
 
     // X轴基线
