@@ -534,6 +534,20 @@ body{
   .sidebar-header{justify-content:center}
 }
 @media(max-width:640px){
+  /* 移动端全局缩小UI尺寸 */
+  body{font-size:14px}
+  .main{padding:12px;padding-bottom:calc(32px + env(safe-area-inset-bottom))}
+  .header{margin-bottom:12px}
+  .header h1{font-size:18px}
+  .card{padding:12px;margin-bottom:12px}
+  .dash-card{padding:12px}
+  .dash-card-value{font-size:18px}
+  .btn{padding:8px 14px;font-size:13px;min-height:40px}
+  .form-group input,.form-group select,.form-group textarea{font-size:14px;padding:8px 10px}
+  .tab{font-size:13px;padding:8px 4px}
+  .plan-day{padding:12px 14px;margin-bottom:10px}
+  .plan-day-title{font-size:14px}
+  .day-badge{font-size:12px;padding:2px 8px}
   .period-year-grid{grid-template-columns:repeat(2,1fr)}
   .period-month-title{font-size:18px}
   .period-month-label{font-size:15px}
@@ -541,21 +555,34 @@ body{
   .period-selected-date{font-size:18px}
   .period-record-panel{position:static;box-shadow:none;margin-top:12px}
   .period-record-wrapper{padding-bottom:8px}
+  #periodStatsCards{gap:8px}
+  #periodStatsCards .stat-card{padding:14px 10px;min-height:76px}
+  #periodStatsCards .stat-value{font-size:22px}
+  #periodStatsCards .stat-label{font-size:11px}
+  .period-day{font-size:14px;border-radius:8px}
+  .period-day .day-label{font-size:12px}
+  .record-item{padding:12px}
+  .stat-value{font-size:20px}
+  .modal{padding:16px}
 }
 @media(max-width:480px){
-  #app{padding:12px}
-  .header h1{font-size:20px}
+  #app{padding:8px}
+  .header h1{font-size:17px}
   .exercise-row{flex-wrap:wrap}
   .exercise-row .ex-name{flex:1 1 100%}
   .exercise-row .ex-sets,.exercise-row .ex-reps,.exercise-row .ex-weight{flex:1}
   .body-stats{flex-direction:row}
-  .stat-value{font-size:20px}
-  .tab{font-size:13px;padding:8px 4px}
-  .plan-day-title{font-size:14px}
-  #periodStatsCards .stat-value{font-size:22px}
-  #periodStatsCards .stat-label{font-size:11px}
-  .plan-video-wrapper .video-text{max-width:200px}
+  .body-stats .stat-value{font-size:18px}
+  .plan-day-title{font-size:13px}
+  #periodStatsCards .stat-value{font-size:20px}
+  #periodStatsCards .stat-label{font-size:10px}
+  .plan-video-wrapper .video-text{max-width:160px}
   .plan-day-header{flex-wrap:wrap}
+  .card{padding:10px}
+  .dash-card{padding:10px}
+  .dash-card-value{font-size:16px}
+  .period-day{font-size:13px}
+  .tab{font-size:12px;padding:7px 3px}
 }
 </style>
 </head>
@@ -774,16 +801,9 @@ body{
       <div class="card">
         <div class="period-stats-header">
           <div class="period-stats-switch">
-            <button class="period-chart-type active" data-ctype="narrow">细柱图</button>
-            <button class="period-chart-type" data-ctype="wide">宽柱图</button>
+            <button class="period-chart-type" data-ctype="narrow">细柱图</button>
+            <button class="period-chart-type active" data-ctype="wide">宽柱图</button>
           </div>
-        </div>
-        <div class="period-dim-tabs">
-          <button class="period-dim-tab active" data-dim="period">经期</button>
-          <button class="period-dim-tab" data-dim="flow">月经量</button>
-          <button class="period-dim-tab" data-dim="color">颜色</button>
-          <button class="period-dim-tab" data-dim="pain">疼痛度</button>
-          <button class="period-dim-tab" data-dim="sleep">睡眠</button>
         </div>
         <div id="periodChartContainer"></div>
         <div class="period-chart-legend">
@@ -997,7 +1017,7 @@ const App = {
   calendarMonth: null,
   periodYear: null,
   periodTab: 'stats',
-  periodChartType: 'narrow',
+  periodChartType: 'wide',
   periodDim: 'period',
   periodFlow: 3,
   periodPain: 1,
@@ -2234,8 +2254,8 @@ const App = {
     // 细柱图显示全部周期，宽柱图显示最近12个
     const showCycles = this.periodChartType === 'narrow' ? cycles : cycles.slice(-12);
     const N = showCycles.length;
-    const W = 720, H = 520;
-    const pad = { top: 60, right: 80, bottom: 50, left: 40 };
+    const W = 720, H = 560;
+    const pad = { top: 90, right: 80, bottom: 50, left: 40 };
     const pw = W - pad.left - pad.right;
     const ph = H - pad.top - pad.bottom;
 
@@ -2265,13 +2285,9 @@ const App = {
     const idealY = pad.top + (1 - (idealCycle - yMin) / yRange) * ph;
     const avgMensesY = pad.top + (1 - (avgMenses - yMin) / yRange) * ph;
     let refLines = '';
-    // 平均经期（粉虚线，靠近底部）
     refLines += '<line x1="'+pad.left+'" y1="'+avgMensesY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgMensesY.toFixed(1)+'" stroke="#ff6b8a" stroke-width="1.5" stroke-dasharray="5,4"/>';
-    // 理想周期（绿虚线）
     refLines += '<line x1="'+pad.left+'" y1="'+idealY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+idealY.toFixed(1)+'" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,4"/>';
-    // 平均周期（浅蓝虚线）
     refLines += '<line x1="'+pad.left+'" y1="'+avgCycleY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgCycleY.toFixed(1)+'" stroke="#a8d8ea" stroke-width="1.5" stroke-dasharray="5,4"/>';
-    // 参考线右侧标注
     refLines += '<text x="'+(W-pad.right+4)+'" y="'+(avgMensesY+4).toFixed(1)+'" font-size="11" fill="#ff6b8a">平均经期</text>';
     refLines += '<text x="'+(W-pad.right+4)+'" y="'+(idealY+4).toFixed(1)+'" font-size="11" fill="#22c55e">理想周期</text>';
     refLines += '<text x="'+(W-pad.right+4)+'" y="'+(avgCycleY+4).toFixed(1)+'" font-size="11" fill="#3b82f6">平均周期</text>';
@@ -2281,6 +2297,8 @@ const App = {
     let xLabels = '';
     let topLabels = '';
     let earlinessTags = '';
+    // 迟/早标签固定在图表顶部一行（pad.top上方），不跟随柱子高度
+    const earlinessY = pad.top - 30;
 
     showCycles.forEach((c, i) => {
       const cx = pad.left + step * i + step / 2;
@@ -2295,19 +2313,18 @@ const App = {
         const r = Math.min(8, barWidth / 2);
         bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="none" stroke="#a8d8ea" stroke-width="2"/>';
         bars += '<rect x="'+(barX+2).toFixed(1)+'" y="'+(cycleY+2).toFixed(1)+'" width="'+(barWidth-4).toFixed(1)+'" height="'+(cycleH-4).toFixed(1)+'" rx="'+(r-2)+'" ry="'+(r-2)+'" fill="#e0f2fe" opacity="0.7"/>';
-        // 顶部周期天数
+        // 顶部周期天数（紧跟柱子顶部）
         topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-6).toFixed(1)+'" font-size="13" fill="#3b82f6" text-anchor="middle" font-weight="600">'+cycleDay+'</text>';
-        // 提前/推迟标签
+        // 迟/早标签固定在顶部一行
         const diff = cycleDay - avgCycle;
         if (Math.abs(diff) >= 1) {
           const label = diff > 0 ? '迟' + diff : '早' + Math.abs(diff);
           const color = diff > 0 ? '#f59e0b' : '#f97316';
-          const tagY = cycleY - 28;
-          earlinessTags += '<rect x="'+(cx-20).toFixed(1)+'" y="'+tagY.toFixed(1)+'" width="40" height="20" rx="4" ry="4" fill="'+color+'" opacity="0.9"/>';
-          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(tagY+14).toFixed(1)+'" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">'+label+'</text>';
+          earlinessTags += '<rect x="'+(cx-20).toFixed(1)+'" y="'+earlinessY.toFixed(1)+'" width="40" height="20" rx="4" ry="4" fill="'+color+'" opacity="0.9"/>';
+          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+14).toFixed(1)+'" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">'+label+'</text>';
         }
       } else {
-        // 最后一根：当前周期（白色+蓝色边框），显示当前天数
+        // 最后一根：当前周期（白色+蓝色边框）
         const today = this.getToday();
         const lastStart = c.startDate;
         const curDay = this.diffDays(lastStart, today) + 1;
@@ -2628,14 +2645,6 @@ const App = {
         this.periodChartType = t.dataset.ctype;
         document.querySelectorAll('.period-chart-type').forEach(x => x.classList.toggle('active', x.dataset.ctype === this.periodChartType));
         this.renderPeriodChart();
-      };
-    });
-    // 生理期：维度tab（经期/经量/颜色/疼痛/睡眠）
-    document.querySelectorAll('.period-dim-tab').forEach(t => {
-      t.onclick = () => {
-        this.periodDim = t.dataset.dim;
-        document.querySelectorAll('.period-dim-tab').forEach(x => x.classList.toggle('active', x.dataset.dim === this.periodDim));
-        // 预留：未来可按维度切换图表展示
       };
     });
     // 生理期：记录Tab - 月历切换
