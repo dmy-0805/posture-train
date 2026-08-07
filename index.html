@@ -2295,10 +2295,17 @@ const App = {
     // 细柱图显示全部周期，宽柱图显示最近12个
     const showCycles = this.periodChartType === 'narrow' ? cycles : cycles.slice(-12);
     const N = showCycles.length;
-    const W = 720, H = 480;
-    // 动态计算SVG高度，内联style优先级最高，直接覆盖任何CSS规则，彻底解决响应式失效问题
+    const W = 720;
     const ww = window.innerWidth;
     const svgH = ww <= 480 ? 460 : (ww <= 640 ? 500 : 540);
+    const cw = container.clientWidth || 320;
+    // viewBox高度匹配容器渲染比例 → X/Y缩放率完全相等 → 字体等比不变形
+    const H = Math.round(W * svgH / cw);
+    // 字体补偿因子：因viewBox在窄屏上被等比缩小，字体需放大才能保持可读
+    // X_scale = cw/720, 要得到14px实际像素, 需要 fontSize = 14 / (cw/720) = 14*720/cw
+    const fsScale = Math.min(2.2, Math.max(1.0, 720 / cw));
+    const fs = (base) => Math.round(base * fsScale);
+    const fsY = (base) => (base * fsScale).toFixed(1);  // Y偏移也按比例缩放
     const pad = { top: 54, right: 40, bottom: 34, left: 42 };
     const pw = W - pad.left - pad.right;
     const ph = H - pad.top - pad.bottom;
@@ -2320,7 +2327,7 @@ const App = {
       const val = yMax - (yMax / 4) * i;
       const y = pad.top + (i / 4) * ph;
       grid += '<line x1="'+pad.left+'" y1="'+y.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+y.toFixed(1)+'" stroke="#f0f0f0" stroke-width="1"/>';
-      yLabels += '<text x="'+(pad.left-10)+'" y="'+(y+5).toFixed(1)+'" font-size="14" fill="#666" text-anchor="end" font-weight="600">'+Math.round(val)+'</text>';
+      yLabels += '<text x="'+(pad.left-10)+'" y="'+(y+fsY(5))+'" font-size="'+fs(14)+'" fill="#666" text-anchor="end" font-weight="600">'+Math.round(val)+'</text>';
     }
 
     // 参考线（仅保留虚线，文字标签移到底部HTML图例区，避免手机窄屏截断）
@@ -2338,7 +2345,7 @@ const App = {
     let xLabels = '';
     let topLabels = '';
     let earlinessTags = '';
-    const earlinessY = pad.top - 28;
+    const earlinessY = pad.top - fsY(28);
 
     showCycles.forEach((c, i) => {
       const cx = pad.left + step * i + step / 2;
@@ -2350,15 +2357,16 @@ const App = {
         const cycleH = (cycleDay / yRange) * ph;
         const cycleY = pad.top + ph - cycleH;
         const r = Math.min(10, barWidth / 2);
+        const off = fsY(3);  // 内描边偏移量按字体缩放比例
         bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="none" stroke="#a8d8ea" stroke-width="2.5"/>';
-        bars += '<rect x="'+(barX+3).toFixed(1)+'" y="'+(cycleY+3).toFixed(1)+'" width="'+(barWidth-6).toFixed(1)+'" height="'+(cycleH-6).toFixed(1)+'" rx="'+(r-3)+'" ry="'+(r-3)+'" fill="#e0f2fe" opacity="0.85"/>';
-        topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-9).toFixed(1)+'" font-size="16" fill="#2563eb" text-anchor="middle" font-weight="700">'+cycleDay+'</text>';
+        bars += '<rect x="'+(barX+parseFloat(off)).toFixed(1)+'" y="'+(cycleY+parseFloat(off)).toFixed(1)+'" width="'+(barWidth-parseFloat(fsY(6))).toFixed(1)+'" height="'+(cycleH-parseFloat(fsY(6))).toFixed(1)+'" rx="'+(r-3)+'" ry="'+(r-3)+'" fill="#e0f2fe" opacity="0.85"/>';
+        topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-fsY(9))+'" font-size="'+fs(16)+'" fill="#2563eb" text-anchor="middle" font-weight="700">'+cycleDay+'</text>';
         const diff = cycleDay - avgCycle;
         if (Math.abs(diff) >= 1) {
           const label = diff > 0 ? '迟' + diff : '早' + Math.abs(diff);
           const color = diff > 0 ? '#f59e0b' : '#f97316';
-          earlinessTags += '<rect x="'+(cx-24).toFixed(1)+'" y="'+earlinessY.toFixed(1)+'" width="48" height="26" rx="6" ry="6" fill="'+color+'" opacity="0.95"/>';
-          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+18).toFixed(1)+'" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">'+label+'</text>';
+          earlinessTags += '<rect x="'+(cx-24).toFixed(1)+'" y="'+earlinessY+'" width="48" height="26" rx="6" ry="6" fill="'+color+'" opacity="0.95"/>';
+          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+fsY(18))+'" font-size="'+fs(13)+'" fill="#fff" text-anchor="middle" font-weight="700">'+label+'</text>';
         }
       } else {
         const today = this.getToday();
@@ -2369,8 +2377,9 @@ const App = {
           const cycleH = (ch / yRange) * ph;
           const cycleY = pad.top + ph - cycleH;
           const r = Math.min(10, barWidth / 2);
+          const off = fsY(3);
           bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="#fff" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="5,4"/>';
-          topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-9).toFixed(1)+'" font-size="15" fill="#3b82f6" text-anchor="middle" font-weight="700">当前'+curDay+'</text>';
+          topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-fsY(9))+'" font-size="'+fs(15)+'" fill="#3b82f6" text-anchor="middle" font-weight="700">当前'+curDay+'</text>';
         }
       }
 
@@ -2378,11 +2387,11 @@ const App = {
       const mensesY = pad.top + ph - mensesH;
       const mr = Math.min(10, barWidth / 2);
       bars += '<rect x="'+barX.toFixed(1)+'" y="'+mensesY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+mensesH.toFixed(1)+'" rx="'+mr+'" ry="'+mr+'" fill="#ff6b8a"/>';
-      topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(pad.top+ph-5).toFixed(1)+'" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">'+mensesDay+'</text>';
+      topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(pad.top+ph-fsY(5))+'" font-size="'+fs(14)+'" fill="#fff" text-anchor="middle" font-weight="700">'+mensesDay+'</text>';
 
       const m = parseInt(c.startDate.slice(5,7));
       const d = parseInt(c.startDate.slice(8,10));
-      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-26).toFixed(1)+'" font-size="14" fill="#444" text-anchor="middle" font-weight="600">'+m+'.'+d+'</text>';
+      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-fsY(26))+'" font-size="'+fs(14)+'" fill="#444" text-anchor="middle" font-weight="600">'+m+'.'+d+'</text>';
     });
 
     // X轴基线
