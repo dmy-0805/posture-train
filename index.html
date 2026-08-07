@@ -464,7 +464,7 @@ body{
 .period-dim-tab{flex-shrink:0;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--text-2);font-weight:500;transition:all .15s;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:2px}
 .period-dim-tab svg{flex-shrink:0}
 .period-dim-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.period-chart-legend{display:flex;gap:20px;justify-content:center;margin-top:12px;font-size:13px}
+.period-chart-legend{display:flex;gap:20px;justify-content:center;margin-top:8px;font-size:13px}
 .period-ref-lines{display:flex;gap:20px;justify-content:center;margin-top:8px;font-size:12px;color:var(--text-3);flex-wrap:wrap}
 .legend-line.period-cycle-line{background:#a8d8ea}
 .legend-line.period-avg-menses{background:repeating-linear-gradient(90deg,#ff6b8a 0,#ff6b8a 4px,transparent 4px,transparent 7px)}
@@ -584,7 +584,7 @@ body{
   #periodStatsCards .stat-value{font-size:20px}
   #periodStatsCards .stat-label{font-size:11px;margin-top:4px}
   /* 生理期：图表固定高度，移动端也足够大 */
-  #periodChartContainer svg{height:420px}
+  #periodChartContainer svg{height:460px}
   .record-item{padding:12px}
   .stat-value{font-size:20px}
   .modal{padding:16px}
@@ -615,7 +615,7 @@ body{
   .period-mini-wd{font-size:11px;padding:2px 0}
   .period-year-grid{grid-template-columns:1fr;gap:10px}
   .tab{font-size:12px;padding:7px 3px}
-  #periodChartContainer svg{height:400px}
+  #periodChartContainer svg{height:440px}
 }
 </style>
 </head>
@@ -2287,8 +2287,8 @@ const App = {
     // 细柱图显示全部周期，宽柱图显示最近12个
     const showCycles = this.periodChartType === 'narrow' ? cycles : cycles.slice(-12);
     const N = showCycles.length;
-    const W = 820, H = 640;
-    const pad = { top: 100, right: 90, bottom: 60, left: 50 };
+    const W = 720, H = 480;
+    const pad = { top: 58, right: 52, bottom: 38, left: 42 };
     const pw = W - pad.left - pad.right;
     const ph = H - pad.top - pad.bottom;
 
@@ -2299,7 +2299,7 @@ const App = {
     const yMin = 0;
     const yRange = yMax - yMin || 1;
 
-    const barWidth = this.periodChartType === 'wide' ? pw / (N * 1.4) : Math.min(28, pw / (N * 1.7));
+    const barWidth = this.periodChartType === 'wide' ? pw / (N * 1.12) : Math.min(36, pw / (N * 1.35));
     const step = pw / N;
 
     // 网格线 & Y轴标签
@@ -2309,7 +2309,7 @@ const App = {
       const val = yMax - (yMax / 4) * i;
       const y = pad.top + (i / 4) * ph;
       grid += '<line x1="'+pad.left+'" y1="'+y.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+y.toFixed(1)+'" stroke="#f0f0f0" stroke-width="1"/>';
-      yLabels += '<text x="'+(pad.left-10)+'" y="'+(y+5).toFixed(1)+'" font-size="13" fill="#888" text-anchor="end" font-weight="500">'+Math.round(val)+'</text>';
+      yLabels += '<text x="'+(pad.left-10)+'" y="'+(y+5).toFixed(1)+'" font-size="14" fill="#666" text-anchor="end" font-weight="600">'+Math.round(val)+'</text>';
     }
 
     // 参考线
@@ -2321,16 +2321,16 @@ const App = {
     refLines += '<line x1="'+pad.left+'" y1="'+avgMensesY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgMensesY.toFixed(1)+'" stroke="#ff6b8a" stroke-width="1.5" stroke-dasharray="5,4"/>';
     refLines += '<line x1="'+pad.left+'" y1="'+idealY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+idealY.toFixed(1)+'" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,4"/>';
     refLines += '<line x1="'+pad.left+'" y1="'+avgCycleY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgCycleY.toFixed(1)+'" stroke="#a8d8ea" stroke-width="1.5" stroke-dasharray="5,4"/>';
-    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgMensesY+5).toFixed(1)+'" font-size="12" fill="#ff6b8a" font-weight="500">平均经期</text>';
-    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(idealY+5).toFixed(1)+'" font-size="12" fill="#22c55e" font-weight="500">理想周期</text>';
-    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgCycleY+5).toFixed(1)+'" font-size="12" fill="#3b82f6" font-weight="500">平均周期</text>';
+    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgMensesY+5).toFixed(1)+'" font-size="13" fill="#ff6b8a" font-weight="600">平均经期</text>';
+    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(idealY+5).toFixed(1)+'" font-size="13" fill="#22c55e" font-weight="600">理想周期</text>';
+    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgCycleY+5).toFixed(1)+'" font-size="13" fill="#3b82f6" font-weight="600">平均周期</text>';
 
     // 柱子和标签
     let bars = '';
     let xLabels = '';
     let topLabels = '';
     let earlinessTags = '';
-    const earlinessY = pad.top - 34;
+    const earlinessY = pad.top - 30;
 
     showCycles.forEach((c, i) => {
       const cx = pad.left + step * i + step / 2;
@@ -2343,14 +2343,14 @@ const App = {
         const cycleY = pad.top + ph - cycleH;
         const r = Math.min(10, barWidth / 2);
         bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="none" stroke="#a8d8ea" stroke-width="2.5"/>';
-        bars += '<rect x="'+(barX+3).toFixed(1)+'" y="'+(cycleY+3).toFixed(1)+'" width="'+(barWidth-6).toFixed(1)+'" height="'+(cycleH-6).toFixed(1)+'" rx="'+(r-3)+'" ry="'+(r-3)+'" fill="#e0f2fe" opacity="0.8"/>';
-        topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-8).toFixed(1)+'" font-size="15" fill="#3b82f6" text-anchor="middle" font-weight="700">'+cycleDay+'</text>';
+        bars += '<rect x="'+(barX+3).toFixed(1)+'" y="'+(cycleY+3).toFixed(1)+'" width="'+(barWidth-6).toFixed(1)+'" height="'+(cycleH-6).toFixed(1)+'" rx="'+(r-3)+'" ry="'+(r-3)+'" fill="#e0f2fe" opacity="0.85"/>';
+        topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-9).toFixed(1)+'" font-size="16" fill="#2563eb" text-anchor="middle" font-weight="700">'+cycleDay+'</text>';
         const diff = cycleDay - avgCycle;
         if (Math.abs(diff) >= 1) {
           const label = diff > 0 ? '迟' + diff : '早' + Math.abs(diff);
           const color = diff > 0 ? '#f59e0b' : '#f97316';
-          earlinessTags += '<rect x="'+(cx-22).toFixed(1)+'" y="'+earlinessY.toFixed(1)+'" width="44" height="24" rx="5" ry="5" fill="'+color+'" opacity="0.92"/>';
-          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+17).toFixed(1)+'" font-size="12" fill="#fff" text-anchor="middle" font-weight="700">'+label+'</text>';
+          earlinessTags += '<rect x="'+(cx-24).toFixed(1)+'" y="'+earlinessY.toFixed(1)+'" width="48" height="26" rx="6" ry="6" fill="'+color+'" opacity="0.95"/>';
+          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+18).toFixed(1)+'" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">'+label+'</text>';
         }
       } else {
         const today = this.getToday();
@@ -2362,7 +2362,7 @@ const App = {
           const cycleY = pad.top + ph - cycleH;
           const r = Math.min(10, barWidth / 2);
           bars += '<rect x="'+barX.toFixed(1)+'" y="'+cycleY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+cycleH.toFixed(1)+'" rx="'+r+'" ry="'+r+'" fill="#fff" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="5,4"/>';
-          topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-8).toFixed(1)+'" font-size="15" fill="#3b82f6" text-anchor="middle" font-weight="700">当前 '+curDay+'</text>';
+          topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(cycleY-9).toFixed(1)+'" font-size="15" fill="#3b82f6" text-anchor="middle" font-weight="700">当前'+curDay+'</text>';
         }
       }
 
@@ -2370,17 +2370,17 @@ const App = {
       const mensesY = pad.top + ph - mensesH;
       const mr = Math.min(10, barWidth / 2);
       bars += '<rect x="'+barX.toFixed(1)+'" y="'+mensesY.toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+mensesH.toFixed(1)+'" rx="'+mr+'" ry="'+mr+'" fill="#ff6b8a"/>';
-      topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(pad.top+ph-5).toFixed(1)+'" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">'+mensesDay+'</text>';
+      topLabels += '<text x="'+cx.toFixed(1)+'" y="'+(pad.top+ph-5).toFixed(1)+'" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">'+mensesDay+'</text>';
 
       const m = parseInt(c.startDate.slice(5,7));
       const d = parseInt(c.startDate.slice(8,10));
-      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-32).toFixed(1)+'" font-size="13" fill="#555" text-anchor="middle" font-weight="500">'+m+'.'+d+'</text>';
+      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-28).toFixed(1)+'" font-size="14" fill="#444" text-anchor="middle" font-weight="600">'+m+'.'+d+'</text>';
     });
 
     // X轴基线
     grid += '<line x1="'+pad.left+'" y1="'+(pad.top+ph).toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+(pad.top+ph).toFixed(1)+'" stroke="#d8d8d8" stroke-width="1"/>';
 
-    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;height:480px">' +
+    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="display:block;width:100%;height:480px">' +
       grid + yLabels + refLines + bars + xLabels + topLabels + earlinessTags +
     '</svg>';
   },
