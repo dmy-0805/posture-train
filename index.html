@@ -548,8 +548,8 @@ body{
   .plan-day{padding:12px 14px;margin-bottom:10px}
   .plan-day-title{font-size:14px}
   .day-badge{font-size:12px;padding:2px 8px}
-  /* 生理期：年度日历2列，高度紧凑 */
-  .period-year-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  /* 生理期：年度日历1列，适配手机 */
+  .period-year-grid{grid-template-columns:1fr;gap:8px}
   .period-mini-month{padding:6px}
   .period-mini-month-title{font-size:12px;margin-bottom:3px;font-weight:600}
   .period-mini-wd{font-size:9px;padding:1px 0;font-weight:500}
@@ -583,8 +583,8 @@ body{
   #periodStatsCards .stat-card{padding:12px 8px;min-height:68px}
   #periodStatsCards .stat-value{font-size:20px}
   #periodStatsCards .stat-label{font-size:11px;margin-top:4px}
-  /* 生理期：图表高度平衡（不过高，与卡片首屏共存） */
-  #periodChartContainer svg{min-height:340px;max-height:420px}
+  /* 生理期：图表固定高度，移动端也足够大 */
+  #periodChartContainer svg{height:420px}
   .record-item{padding:12px}
   .stat-value{font-size:20px}
   .modal{padding:16px}
@@ -605,16 +605,17 @@ body{
   .card{padding:10px}
   .dash-card{padding:10px}
   .dash-card-value{font-size:16px}
-  .period-day{min-height:32px;font-size:14px;border-radius:8px}
-  .period-day .day-label{font-size:12px}
-  .period-weekdays span{font-size:11px}
-  .period-month-title{font-size:18px}
-  .period-month-label{font-size:14px}
-  .period-mini-cell{min-height:20px;font-size:10px}
-  .period-mini-month-title{font-size:12px}
-  .period-year-grid{gap:8px}
+  .period-day{min-height:30px;font-size:13px;border-radius:7px}
+  .period-day .day-label{font-size:11px}
+  .period-weekdays span{font-size:10px;padding:1px 0}
+  .period-month-title{font-size:17px}
+  .period-month-label{font-size:13px}
+  .period-mini-cell{min-height:24px;font-size:12px;border-radius:4px}
+  .period-mini-month-title{font-size:14px;margin-bottom:4px}
+  .period-mini-wd{font-size:11px;padding:2px 0}
+  .period-year-grid{grid-template-columns:1fr;gap:10px}
   .tab{font-size:12px;padding:7px 3px}
-  #periodChartContainer svg{min-height:340px}
+  #periodChartContainer svg{height:400px}
 }
 </style>
 </head>
@@ -2379,7 +2380,7 @@ const App = {
     // X轴基线
     grid += '<line x1="'+pad.left+'" y1="'+(pad.top+ph).toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+(pad.top+ph).toFixed(1)+'" stroke="#d8d8d8" stroke-width="1"/>';
 
-    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;height:auto;min-height:480px">' +
+    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;height:480px">' +
       grid + yLabels + refLines + bars + xLabels + topLabels + earlinessTags +
     '</svg>';
   },
