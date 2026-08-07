@@ -240,7 +240,7 @@ body{
 .body-stats .stat-value{font-size:24px;font-weight:700}
 .body-stats .stat-label{font-size:12px;color:var(--text-3);margin-top:2px}
 /* 周期统计卡片 - 2x2网格覆盖 */
-#periodStatsCards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+#periodStatsCards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px}
 #periodStatsCards .stat-card{
   background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
   padding:18px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;
@@ -456,7 +456,7 @@ body{
 .period-mini-cell.ovulation{background:#f59e0b;color:#fff;font-weight:600}
 .period-mini-cell.predicted{background:#fff;border:2px solid #ff6b8a;color:#ff6b8a;font-weight:600}
 .period-mini-cell.predicted-ovulation{background:#fff;border:2px solid #f59e0b;color:#f59e0b;font-weight:600}
-.period-stats-header{display:flex;justify-content:flex-end;margin-bottom:12px}
+.period-stats-header{display:flex;justify-content:flex-end;margin-bottom:8px}
 .period-stats-switch{display:flex;background:var(--bg);border-radius:6px;padding:3px;gap:2px}
 .period-chart-type{background:transparent;border:none;padding:6px 12px;border-radius:4px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--text-2);font-weight:500;transition:all .15s}
 .period-chart-type.active{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.06)}
@@ -579,12 +579,14 @@ body{
   .period-record-legend{font-size:11px;gap:10px;margin-top:10px}
   .period-record-wrapper{padding-bottom:8px}
   /* 生理期：统计卡片高度紧凑，首屏可见 */
-  #periodStatsCards{gap:8px}
+  #periodStatsCards{gap:8px;margin-bottom:10px}
   #periodStatsCards .stat-card{padding:12px 8px;min-height:68px}
   #periodStatsCards .stat-value{font-size:20px}
   #periodStatsCards .stat-label{font-size:11px;margin-top:4px}
-  /* 生理期：图表固定高度，移动端也足够大 */
-  #periodChartContainer svg{height:460px}
+  /* 生理期：图表高度由JS动态计算（内联style），此处仅收紧按钮行间距 */
+  .period-stats-header{margin-bottom:5px}
+  .period-ref-lines{margin-top:4px;font-size:11px}
+  .period-chart-legend{margin-top:6px;font-size:12px}
   .record-item{padding:12px}
   .stat-value{font-size:20px}
   .modal{padding:16px}
@@ -615,7 +617,13 @@ body{
   .period-mini-wd{font-size:11px;padding:2px 0}
   .period-year-grid{grid-template-columns:1fr;gap:10px}
   .tab{font-size:12px;padding:7px 3px}
-  #periodChartContainer svg{height:440px}
+  /* 超小屏再收紧间距 */
+  #periodStatsCards{gap:6px;margin-bottom:8px}
+  #periodStatsCards .stat-card{padding:10px 6px;min-height:62px}
+  .period-stats-header{margin-bottom:4px}
+  .period-ref-lines{font-size:10px;gap:10px}
+  .period-chart-legend{font-size:11px;gap:14px}
+  .card{padding:9px}
 }
 </style>
 </head>
@@ -831,6 +839,7 @@ body{
 
     <!-- 周期统计 Tab -->
     <div id="pStatsTab" class="tab-content active">
+      <div class="body-stats" id="periodStatsCards"></div>
       <div class="card">
         <div class="period-stats-header">
           <div class="period-stats-switch">
@@ -849,7 +858,6 @@ body{
           <div class="legend-item"><span class="legend-line period-avg-cycle"></span>平均周期(<span id="avgCycleDays">0</span>天)</div>
         </div>
       </div>
-      <div class="body-stats" id="periodStatsCards"></div>
     </div>
 
     <!-- 记录 Tab -->
@@ -2288,7 +2296,10 @@ const App = {
     const showCycles = this.periodChartType === 'narrow' ? cycles : cycles.slice(-12);
     const N = showCycles.length;
     const W = 720, H = 480;
-    const pad = { top: 58, right: 52, bottom: 38, left: 42 };
+    // 动态计算SVG高度，内联style优先级最高，直接覆盖任何CSS规则，彻底解决响应式失效问题
+    const ww = window.innerWidth;
+    const svgH = ww <= 480 ? 460 : (ww <= 640 ? 500 : 540);
+    const pad = { top: 54, right: 40, bottom: 34, left: 42 };
     const pw = W - pad.left - pad.right;
     const ph = H - pad.top - pad.bottom;
 
@@ -2312,7 +2323,7 @@ const App = {
       yLabels += '<text x="'+(pad.left-10)+'" y="'+(y+5).toFixed(1)+'" font-size="14" fill="#666" text-anchor="end" font-weight="600">'+Math.round(val)+'</text>';
     }
 
-    // 参考线
+    // 参考线（仅保留虚线，文字标签移到底部HTML图例区，避免手机窄屏截断）
     const avgCycleY = pad.top + (1 - (avgCycle - yMin) / yRange) * ph;
     const idealCycle = 28;
     const idealY = pad.top + (1 - (idealCycle - yMin) / yRange) * ph;
@@ -2321,16 +2332,13 @@ const App = {
     refLines += '<line x1="'+pad.left+'" y1="'+avgMensesY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgMensesY.toFixed(1)+'" stroke="#ff6b8a" stroke-width="1.5" stroke-dasharray="5,4"/>';
     refLines += '<line x1="'+pad.left+'" y1="'+idealY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+idealY.toFixed(1)+'" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,4"/>';
     refLines += '<line x1="'+pad.left+'" y1="'+avgCycleY.toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+avgCycleY.toFixed(1)+'" stroke="#a8d8ea" stroke-width="1.5" stroke-dasharray="5,4"/>';
-    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgMensesY+5).toFixed(1)+'" font-size="13" fill="#ff6b8a" font-weight="600">平均经期</text>';
-    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(idealY+5).toFixed(1)+'" font-size="13" fill="#22c55e" font-weight="600">理想周期</text>';
-    refLines += '<text x="'+(W-pad.right+6)+'" y="'+(avgCycleY+5).toFixed(1)+'" font-size="13" fill="#3b82f6" font-weight="600">平均周期</text>';
 
     // 柱子和标签
     let bars = '';
     let xLabels = '';
     let topLabels = '';
     let earlinessTags = '';
-    const earlinessY = pad.top - 30;
+    const earlinessY = pad.top - 28;
 
     showCycles.forEach((c, i) => {
       const cx = pad.left + step * i + step / 2;
@@ -2374,13 +2382,13 @@ const App = {
 
       const m = parseInt(c.startDate.slice(5,7));
       const d = parseInt(c.startDate.slice(8,10));
-      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-28).toFixed(1)+'" font-size="14" fill="#444" text-anchor="middle" font-weight="600">'+m+'.'+d+'</text>';
+      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-26).toFixed(1)+'" font-size="14" fill="#444" text-anchor="middle" font-weight="600">'+m+'.'+d+'</text>';
     });
 
     // X轴基线
     grid += '<line x1="'+pad.left+'" y1="'+(pad.top+ph).toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+(pad.top+ph).toFixed(1)+'" stroke="#d8d8d8" stroke-width="1"/>';
 
-    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="display:block;width:100%;height:480px">' +
+    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="display:block;width:100%;height:'+svgH+'px">' +
       grid + yLabels + refLines + bars + xLabels + topLabels + earlinessTags +
     '</svg>';
   },
