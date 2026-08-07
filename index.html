@@ -548,22 +548,39 @@ body{
   .plan-day{padding:12px 14px;margin-bottom:10px}
   .plan-day-title{font-size:14px}
   .day-badge{font-size:12px;padding:2px 8px}
+  /* 生理期：年度日历改为2列，缩小格子 */
+  .period-year-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .period-mini-month{padding:8px}
+  .period-mini-month-title{font-size:13px;margin-bottom:4px}
+  .period-mini-wd{font-size:10px;padding:1px 0}
+  .period-mini-cell{min-height:22px;font-size:11px;border-radius:4px}
+  /* 生理期：记录Tab缩小月历 */
+  .period-month-title{font-size:20px}
+  .period-month-label{font-size:16px}
+  .period-weekdays span{font-size:12px;padding:2px 0}
+  .period-day{min-height:36px;font-size:16px;border-radius:10px}
+  .period-day .day-label{font-size:14px}
+  .period-day .day-tag{font-size:9px}
+  .period-day-flow{width:6px;height:6px}
+  .period-day-pain{font-size:9px}
+  .action-icon{width:44px;height:44px;border-radius:14px}
+  .period-action-btn span{font-size:13px}
+  .period-selected-date{font-size:20px}
+  .period-record-panel{padding:14px;margin-top:10px}
+  .period-record-legend{font-size:12px;gap:12px;margin-top:12px}
   .period-year-grid{grid-template-columns:repeat(2,1fr)}
   .period-month-title{font-size:18px}
   .period-month-label{font-size:15px}
-  .action-icon{width:42px;height:42px;border-radius:12px}
-  .period-selected-date{font-size:18px}
-  .period-record-panel{position:static;box-shadow:none;margin-top:12px}
   .period-record-wrapper{padding-bottom:8px}
   #periodStatsCards{gap:8px}
   #periodStatsCards .stat-card{padding:14px 10px;min-height:76px}
   #periodStatsCards .stat-value{font-size:22px}
   #periodStatsCards .stat-label{font-size:11px}
-  .period-day{font-size:14px;border-radius:8px}
-  .period-day .day-label{font-size:12px}
   .record-item{padding:12px}
   .stat-value{font-size:20px}
   .modal{padding:16px}
+  /* 图表在移动端缩小 */
+  #periodChartContainer svg{min-height:380px}
 }
 @media(max-width:480px){
   #app{padding:8px}
@@ -581,8 +598,16 @@ body{
   .card{padding:10px}
   .dash-card{padding:10px}
   .dash-card-value{font-size:16px}
-  .period-day{font-size:13px}
+  .period-day{min-height:32px;font-size:14px;border-radius:8px}
+  .period-day .day-label{font-size:12px}
+  .period-weekdays span{font-size:11px}
+  .period-month-title{font-size:18px}
+  .period-month-label{font-size:14px}
+  .period-mini-cell{min-height:20px;font-size:10px}
+  .period-mini-month-title{font-size:12px}
+  .period-year-grid{gap:8px}
   .tab{font-size:12px;padding:7px 3px}
+  #periodChartContainer svg{min-height:340px}
 }
 </style>
 </head>
@@ -2347,7 +2372,7 @@ const App = {
     // X轴基线
     grid += '<line x1="'+pad.left+'" y1="'+(pad.top+ph).toFixed(1)+'" x2="'+(W-pad.right)+'" y2="'+(pad.top+ph).toFixed(1)+'" stroke="#d8d8d8" stroke-width="1"/>';
 
-    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">' +
+    container.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;height:auto;min-height:480px">' +
       grid + yLabels + refLines + bars + xLabels + topLabels + earlinessTags +
     '</svg>';
   },
