@@ -234,10 +234,19 @@ body{
 .legend-line{width:16px;height:3px;border-radius:2px}
 .legend-line.solid{background:var(--primary)}
 .legend-line.dashed{background:repeating-linear-gradient(90deg,#999 0,#999 4px,transparent 4px,transparent 7px)}
+/* 身体数据统计卡片 - 4列横排 */
 .body-stats{display:flex;gap:12px;margin-bottom:16px}
-.stat-card{flex:1;background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);text-align:center}
-.stat-value{font-size:24px;font-weight:700}
-.stat-label{font-size:12px;color:var(--text-3);margin-top:2px}
+.body-stats .stat-card{flex:1;background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);text-align:center}
+.body-stats .stat-value{font-size:24px;font-weight:700}
+.body-stats .stat-label{font-size:12px;color:var(--text-3);margin-top:2px}
+/* 周期统计卡片 - 2x2网格覆盖 */
+#periodStatsCards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+#periodStatsCards .stat-card{
+  padding:16px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-height:80px;
+}
+#periodStatsCards .stat-value{font-size:26px;font-weight:700;line-height:1.1;white-space:nowrap}
+#periodStatsCards .stat-label{font-size:12px;color:var(--text-3);margin-top:4px;white-space:nowrap}
 .stat-change{font-size:12px;margin-top:4px}
 .stat-change.up{color:var(--danger)}
 .stat-change.down{color:var(--success)}
@@ -279,23 +288,27 @@ body{
   border-radius:4px;padding:4px 8px;font-size:12px;color:var(--text-3);cursor:pointer;font-family:inherit;
 }
 /* 训练计划 */
-.plan-day{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:2px solid transparent;transition:border-color .2s}
+/* 训练计划卡片 - 紧凑布局 */
+.plan-day{background:var(--card);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);border:2px solid transparent;transition:border-color .2s}
 .plan-day.today{border-color:var(--primary)}
-.plan-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px}
-.plan-day-label{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.plan-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:nowrap;gap:8px}
+.plan-day-label{display:flex;align-items:center;gap:8px;flex:1;min-width:0;overflow:hidden}
 .day-badge{background:var(--bg);border-radius:6px;padding:3px 10px;font-size:13px;font-weight:600;color:var(--text-2);white-space:nowrap;flex-shrink:0}
 .plan-day.today .day-badge{background:var(--primary);color:#fff}
-.plan-day-title{font-weight:600;font-size:15px}
-.plan-duration{font-size:12px;color:var(--text-3);white-space:nowrap}
-.plan-video-info{font-size:12px;color:var(--text-3);margin:8px 0;line-height:1.5}
-.plan-video-wrapper{display:block;text-decoration:none;position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--radius-sm);overflow:hidden;margin:8px 0;background:#1a1a1a;cursor:pointer}
-.plan-video-cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);transition:background .2s}
-.plan-video-cover:hover{background:linear-gradient(135deg,#222,#3a3a3a)}
-.plan-video-cover .play-circle{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
-.plan-video-cover:hover .play-circle{transform:scale(1.1);background:#fff}
-.plan-video-cover .play-circle svg{margin-left:3px}
-.plan-video-cover .cover-text{color:rgba(255,255,255,.7);font-size:12px;text-align:center;padding:0 16px;line-height:1.4}
-.plan-video-cover.hidden{display:none}
+.plan-day-title{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plan-duration{font-size:12px;color:var(--text-3);white-space:nowrap;flex-shrink:0}
+/* 视频区域 - 紧凑行内链接 */
+.plan-video-info{font-size:12px;color:var(--text-3);margin:6px 0 0;line-height:1.5}
+.plan-video-wrapper{
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  padding:6px 10px;border-radius:var(--radius-sm);background:var(--bg);
+  color:var(--text-2);font-size:12px;margin:6px 0 0;cursor:pointer;transition:all .15s;
+}
+.plan-video-wrapper:hover{background:var(--primary);color:#fff}
+.plan-video-wrapper .play-icon{width:16px;height:16px;flex-shrink:0}
+.plan-video-wrapper .video-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 旧大图样式保留但默认隐藏 */
+.plan-video-cover{display:none}
 .plan-exercises{margin:10px 0}
 .plan-exercise-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px}
 .plan-exercise-item:last-child{border-bottom:none}
@@ -312,7 +325,7 @@ body{
 .today-plan-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:8px;background:#f5f5f5;border:1px solid var(--border)}
 .today-plan-day{background:var(--primary);color:#fff;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600;flex-shrink:0}
 .today-plan-info{flex:1;min-width:0}
-.today-plan-title{font-weight:600;font-size:14px}
+.today-plan-title{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .today-plan-meta{font-size:12px;color:var(--text-3)}
 .today-plan-actions{display:flex;gap:6px;flex-shrink:0}
 .plan-action-btn{border:none;border-radius:6px;padding:8px 12px;font-size:12px;cursor:pointer;font-family:inherit;min-height:36px;white-space:nowrap}
@@ -525,6 +538,8 @@ body{
   .stat-value{font-size:20px}
   .tab{font-size:13px;padding:8px 4px}
   .plan-day-title{font-size:14px}
+  #periodStatsCards .stat-value{font-size:22px}
+  #periodStatsCards .stat-label{font-size:11px}
 }
 </style>
 </head>
@@ -851,6 +866,7 @@ body{
   <div class="modal">
     <h3 id="modalTitle">确认</h3>
     <p id="modalMsg">确定要执行此操作吗？</p>
+    <div id="modalMsgHtml"></div>
     <div class="modal-actions">
       <button class="btn btn-outline" id="modalCancel">取消</button>
       <button class="btn btn-danger" id="modalConfirm">确认</button>
@@ -1127,7 +1143,7 @@ const App = {
     const meta2 = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
     if (meta2.periodDataVersion !== 2) {
       this.loadSamplePeriods();
-      localStorage.setItem(this.KEYS.meta, JSON.stringify({ isSample: this.isSample, gender: meta2.gender, height: meta2.height, periodDataVersion: 2 }));
+      localStorage.setItem(this.KEYS.meta, JSON.stringify(Object.assign(meta2, { isSample: this.isSample, periodDataVersion: 2 })));
     }
   },
 
@@ -1294,7 +1310,8 @@ const App = {
   saveAll() {
     localStorage.setItem(this.KEYS.records, JSON.stringify(this.records));
     localStorage.setItem(this.KEYS.body, JSON.stringify(this.bodyData));
-    localStorage.setItem(this.KEYS.meta, JSON.stringify({ isSample: this.isSample }));
+    const oldMeta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
+    localStorage.setItem(this.KEYS.meta, JSON.stringify(Object.assign(oldMeta, { isSample: this.isSample })));
   },
   savePlans() {
     localStorage.setItem(this.KEYS.plans, JSON.stringify(this.planData));
@@ -1338,7 +1355,7 @@ const App = {
 
   setDefaultDates() {
     const today = this.getToday();
-    document.getElementById('bodyDate').value = today;
+    const bd = document.getElementById('bodyDate'); if (bd) bd.value = today;
     const ps = document.getElementById('periodStart'); if (ps) ps.value = today;
     const pe = document.getElementById('periodEnd'); if (pe) pe.value = today;
   },
@@ -1347,8 +1364,8 @@ const App = {
     const meta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
     const gender = meta.gender || 'female';
     const height = meta.height || '';
-    document.getElementById('bodyGender').value = gender;
-    document.getElementById('bodyHeight').value = height;
+    const bg = document.getElementById('bodyGender'); if (bg) bg.value = gender;
+    const bh = document.getElementById('bodyHeight'); if (bh) bh.value = height;
     this.updateHipVisibility();
   },
 
@@ -1850,6 +1867,12 @@ const App = {
     }
     const renderDay = p => {
       const isToday = p.day === today;
+      const videoLink = p.bvid
+        ? '<a class="plan-video-wrapper" href="https://www.bilibili.com/video/' + p.bvid + '/" target="_blank" rel="noopener">' +
+            '<svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>' +
+            '<span class="video-text">观看视频 · ' + this.escapeHtml(p.videoTitle || '') + '</span>' +
+          '</a>'
+        : '';
       return '<div class="plan-day' + (isToday ? ' today' : '') + '">' +
         '<div class="plan-day-header">' +
           '<div class="plan-day-label">' +
@@ -1858,13 +1881,7 @@ const App = {
           '</div>' +
           (p.duration ? '<span class="plan-duration">' + this.escapeHtml(p.duration) + '</span>' : '') +
         '</div>' +
-        '<div class="plan-video-info">' + this.escapeHtml(p.videoTitle || '') + '</div>' +
-        (p.bvid ? '<a class="plan-video-wrapper" href="https://www.bilibili.com/video/' + p.bvid + '/" target="_blank" rel="noopener">' +
-          '<div class="plan-video-cover">' +
-            '<div class="play-circle"><svg viewBox="0 0 24 24" width="24" height="24" fill="#1a1a1a"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>' +
-            '<div class="cover-text">点击跳转 B 站播放跟练视频</div>' +
-          '</div>' +
-        '</a>' : '') +
+        videoLink +
       '</div>';
     };
     container.innerHTML = days.map(renderDay).join('');
@@ -2538,13 +2555,24 @@ const App = {
   // ===== UI =====
   showModal(title, msg, onConfirm) {
     document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalMsg').textContent = msg;
+    const msgEl = document.getElementById('modalMsg');
+    const htmlEl = document.getElementById('modalMsgHtml');
+    // 如果msg含HTML标签，用innerHTML渲染到htmlEl；否则用textContent到msgEl
+    if (msg && msg.indexOf('<') > -1) {
+      msgEl.style.display = 'none';
+      htmlEl.innerHTML = msg;
+    } else {
+      msgEl.style.display = '';
+      msgEl.textContent = msg;
+      htmlEl.innerHTML = '';
+    }
     document.getElementById('modalOverlay').classList.remove('hidden');
     this._modalConfirm = onConfirm;
   },
 
   hideModal() {
     document.getElementById('modalOverlay').classList.add('hidden');
+    document.getElementById('modalMsgHtml').innerHTML = '';
     this._modalConfirm = null;
   },
 
