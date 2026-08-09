@@ -625,6 +625,44 @@ body{
   .period-chart-legend{font-size:11px;gap:14px}
   .card{padding:9px}
 }
+/* 想买的书 */
+.books-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.books-tabs{display:flex;gap:0;border-bottom:2px solid var(--border)}
+.books-tab{
+  padding:8px 20px;border:none;background:transparent;cursor:pointer;
+  font-size:15px;font-weight:600;color:var(--text-3);font-family:inherit;
+  border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;
+}
+.books-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.books-tab span{font-size:13px;font-weight:400;opacity:.7}
+.book-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+  transition:border-color .15s;
+}
+.book-card:hover{border-color:var(--border-2)}
+.book-info{flex:1;min-width:0}
+.book-title{font-size:15px;font-weight:600;line-height:1.4}
+.book-author{font-size:13px;color:var(--text-3);margin-top:2px}
+.book-note{font-size:13px;color:var(--text-2);margin-top:4px;line-height:1.5}
+.book-actions{display:flex;gap:6px;flex-shrink:0}
+.book-action-btn{
+  padding:6px 12px;border:1px solid var(--border);background:var(--card);
+  border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;
+  color:var(--text-2);font-family:inherit;transition:all .15s;white-space:nowrap;
+}
+.book-action-btn:hover{background:var(--bg)}
+.book-action-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.book-action-btn.primary:hover{background:var(--primary-hover)}
+.book-action-btn.danger{color:var(--danger);border-color:var(--danger)}
+.book-action-btn.danger:hover{background:var(--danger-bg)}
+.book-empty{text-align:center;padding:40px 20px;color:var(--text-3);font-size:14px}
+.modal-card{background:#fff;border-radius:var(--radius);padding:20px;max-width:400px;width:100%}
+@media(max-width:480px){
+  .books-tab{padding:8px 14px;font-size:14px}
+  .book-card{padding:12px}
+  .book-action-btn{padding:5px 10px;font-size:12px}
+}
 </style>
 </head>
 <body>
@@ -646,6 +684,10 @@ body{
       <button class="nav-item" data-module="period">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
         <span>生理期</span>
+      </button>
+      <button class="nav-item" data-module="books">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>想买的书</span>
       </button>
     </nav>
     <div class="sidebar-footer">
@@ -916,6 +958,37 @@ body{
     </div>
   </section>
 
+  <!-- 想买的书 -->
+  <section id="booksModule" class="module">
+    <div class="books-header">
+      <div class="books-tabs">
+        <button class="books-tab active" data-btab="wishlist">想买 <span id="booksWishlistCount">0</span></button>
+        <button class="books-tab" data-btab="purchased">已买 <span id="booksPurchasedCount">0</span></button>
+      </div>
+      <button class="icon-btn" id="addBookBtn" title="添加书目" style="font-size:13px;gap:4px;padding:8px 12px">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        添加
+      </button>
+    </div>
+    <div id="booksList"></div>
+  </section>
+
+  <!-- 添加书的弹窗 -->
+  <div class="modal-overlay" id="bookModalOverlay" style="display:none">
+    <div class="modal-card" style="max-width:400px">
+      <h3 id="bookModalTitle" style="margin-bottom:16px">添加书目</h3>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <input type="text" id="bookTitleInput" placeholder="书名" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;outline:none">
+        <input type="text" id="bookAuthorInput" placeholder="作者（可选）" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none">
+        <textarea id="bookNoteInput" placeholder="备注（可选）" rows="2" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none;resize:none"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+        <button class="icon-btn" id="bookCancelBtn" style="padding:8px 16px">取消</button>
+        <button id="bookSaveBtn" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600">保存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 底部设置 -->
   <section id="settingsModule" class="module">
     <div class="card">
@@ -1073,7 +1146,8 @@ const App = {
     plans: 'wb_fitness_plans',
     checkins: 'wb_fitness_checkins',
     nav: 'wb_fitness_nav',
-    periods: 'wb_fitness_periods'
+    periods: 'wb_fitness_periods',
+    books: 'wb_fitness_books'
   },
 
   init() {
@@ -1113,10 +1187,11 @@ const App = {
     if (module) module.classList.add('active');
     var navItem = document.querySelector('.nav-item[data-module="' + name + '"]');
     if (navItem) navItem.classList.add('active');
-    var titles = { home: '首页', workout: '锻炼台', period: '生理期', settings: '设置' };
+    var titles = { home: '首页', workout: '锻炼台', period: '生理期', books: '想买的书', settings: '设置' };
     document.getElementById('pageTitle').textContent = titles[name] || '';
     if (name === 'home') this.renderDashboard();
     if (name === 'period') this.renderPeriodAll();
+    if (name === 'books') this.renderBooks();
   },
 
   switchPeriodTab(name) {
@@ -1200,6 +1275,8 @@ const App = {
     this.planData = JSON.parse(localStorage.getItem(this.KEYS.plans) || '[]');
     this.checkins = JSON.parse(localStorage.getItem(this.KEYS.checkins) || '{}');
     this.periodData = JSON.parse(localStorage.getItem(this.KEYS.periods) || '[]');
+    this.bookData = JSON.parse(localStorage.getItem(this.KEYS.books) || '[]');
+    this.bookTab = 'wishlist';
     const meta = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
     this.isSample = meta.isSample !== false;
 
@@ -1261,6 +1338,107 @@ const App = {
 
   savePeriods() {
     localStorage.setItem(this.KEYS.periods, JSON.stringify(this.periodData));
+  },
+
+  // ===== 想买的书 =====
+  saveBooks() {
+    localStorage.setItem(this.KEYS.books, JSON.stringify(this.bookData));
+  },
+
+  switchBookTab(tab) {
+    this.bookTab = tab;
+    document.querySelectorAll('.books-tab').forEach(t => t.classList.toggle('active', t.dataset.btab === tab));
+    this.renderBooksList();
+  },
+
+  renderBooks() {
+    this.renderBooksList();
+  },
+
+  renderBooksList() {
+    const list = document.getElementById('booksList');
+    if (!list) return;
+    const wishlist = this.bookData.filter(b => b.status === 'wishlist');
+    const purchased = this.bookData.filter(b => b.status === 'purchased');
+    document.getElementById('booksWishlistCount').textContent = wishlist.length;
+    document.getElementById('booksPurchasedCount').textContent = purchased.length;
+
+    const show = this.bookTab === 'wishlist' ? wishlist : purchased;
+    if (show.length === 0) {
+      list.innerHTML = '<div class="book-empty">' + (this.bookTab === 'wishlist' ? '还没有想买的书，点击右上角添加吧' : '还没有已买的书') + '</div>';
+      return;
+    }
+    // 按创建时间降序
+    show.sort((a, b) => b.createdAt - a.createdAt);
+    list.innerHTML = show.map(b => {
+      let actions = '';
+      if (b.status === 'wishlist') {
+        actions += '<button class="book-action-btn primary" onclick="App.markBookPurchased(\'' + b.id + '\')">已买</button>';
+      }
+      actions += '<button class="book-action-btn danger" onclick="App.deleteBook(\'' + b.id + '\')">删除</button>';
+      return '<div class="book-card">' +
+        '<div class="book-info">' +
+          '<div class="book-title">' + this.escapeHtml(b.title) + '</div>' +
+          (b.author ? '<div class="book-author">' + this.escapeHtml(b.author) + '</div>' : '') +
+          (b.note ? '<div class="book-note">' + this.escapeHtml(b.note) + '</div>' : '') +
+        '</div>' +
+        '<div class="book-actions">' + actions + '</div>' +
+      '</div>';
+    }).join('');
+  },
+
+  openBookModal() {
+    document.getElementById('bookTitleInput').value = '';
+    document.getElementById('bookAuthorInput').value = '';
+    document.getElementById('bookNoteInput').value = '';
+    document.getElementById('bookModalOverlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('bookTitleInput').focus(), 50);
+  },
+
+  closeBookModal() {
+    document.getElementById('bookModalOverlay').style.display = 'none';
+  },
+
+  saveBook() {
+    const title = document.getElementById('bookTitleInput').value.trim();
+    if (!title) { this.toast('请输入书名'); return; }
+    const author = document.getElementById('bookAuthorInput').value.trim();
+    const note = document.getElementById('bookNoteInput').value.trim();
+    this.bookData.push({
+      id: this.uid(),
+      title: title,
+      author: author,
+      note: note,
+      status: 'wishlist',
+      createdAt: Date.now()
+    });
+    this.saveBooks();
+    this.closeBookModal();
+    this.renderBooksList();
+    this.toast('已添加到想买列表');
+  },
+
+  markBookPurchased(id) {
+    const book = this.bookData.find(b => b.id === id);
+    if (book) {
+      book.status = 'purchased';
+      this.saveBooks();
+      this.renderBooksList();
+      this.toast('已移到已买列表');
+    }
+  },
+
+  deleteBook(id) {
+    this.showModal('删除书目', '确定删除这本书吗？', () => {
+      this.bookData = this.bookData.filter(b => b.id !== id);
+      this.saveBooks();
+      this.renderBooksList();
+      this.toast('已删除');
+    });
+  },
+
+  escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   },
 
   // ===== 生理期工具方法 =====
@@ -1824,8 +2002,9 @@ const App = {
       planData: this.planData,
       checkins: this.checkins,
       periodData: this.periodData,
+      bookData: this.bookData,
       exportDate: new Date().toISOString(),
-      version: 6
+      version: 7
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1853,12 +2032,14 @@ const App = {
           if (data.planData) this.planData = data.planData;
           if (data.checkins) this.checkins = data.checkins;
           if (data.periodData) this.periodData = data.periodData;
+          if (data.bookData) this.bookData = data.bookData;
           this.isSample = false;
           this.saveAll();
           this.saveTypes();
           this.savePlans();
           this.saveCheckins();
           this.savePeriods();
+          this.saveBooks();
           this.loadProfile();
           this.renderAll();
           this.checkReminder();
@@ -2720,6 +2901,17 @@ const App = {
       if (e.target.files[0]) this.importData(e.target.files[0]);
       e.target.value = '';
     };
+
+    // 想买的书
+    document.getElementById('addBookBtn').onclick = () => this.openBookModal();
+    document.getElementById('bookCancelBtn').onclick = () => this.closeBookModal();
+    document.getElementById('bookSaveBtn').onclick = () => this.saveBook();
+    document.getElementById('bookModalOverlay').onclick = (e) => {
+      if (e.target.id === 'bookModalOverlay') this.closeBookModal();
+    };
+    document.querySelectorAll('.books-tab').forEach(t => {
+      t.onclick = () => this.switchBookTab(t.dataset.btab);
+    });
 
     // 提交
     document.getElementById('bodySubmit').onclick = () => this.addBodyData();
