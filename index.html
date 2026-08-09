@@ -2306,7 +2306,7 @@ const App = {
     const fsScale = Math.min(2.2, Math.max(1.0, 720 / cw));
     const fs = (base) => Math.round(base * fsScale);
     const fsY = (base) => (base * fsScale).toFixed(1);  // Y偏移也按比例缩放
-    const pad = { top: 54, right: 40, bottom: 34, left: 42 };
+    const pad = { top: 82, right: 40, bottom: 56, left: 42 };
     const pw = W - pad.left - pad.right;
     const ph = H - pad.top - pad.bottom;
 
@@ -2345,7 +2345,12 @@ const App = {
     let xLabels = '';
     let topLabels = '';
     let earlinessTags = '';
-    const earlinessY = pad.top - fsY(28);
+    // earliness标签：固定在viewBox顶部，高度随字体动态调整
+    const tagFs = fs(12);
+    const tagH = Math.max(22, Math.round(tagFs * 1.5));
+    const earlinessY = 8;
+    const tagW = Math.min(46, step - 4);
+    const tagTextY = earlinessY + Math.round(tagH / 2 + tagFs * 0.35);
 
     showCycles.forEach((c, i) => {
       const cx = pad.left + step * i + step / 2;
@@ -2365,8 +2370,8 @@ const App = {
         if (Math.abs(diff) >= 1) {
           const label = diff > 0 ? '迟' + diff : '早' + Math.abs(diff);
           const color = diff > 0 ? '#f59e0b' : '#f97316';
-          earlinessTags += '<rect x="'+(cx-24).toFixed(1)+'" y="'+earlinessY+'" width="48" height="26" rx="6" ry="6" fill="'+color+'" opacity="0.95"/>';
-          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+(earlinessY+fsY(18))+'" font-size="'+fs(13)+'" fill="#fff" text-anchor="middle" font-weight="700">'+label+'</text>';
+          earlinessTags += '<rect x="'+(cx-tagW/2).toFixed(1)+'" y="'+earlinessY+'" width="'+tagW+'" height="'+tagH+'" rx="5" ry="5" fill="'+color+'" opacity="0.95"/>';
+          earlinessTags += '<text x="'+cx.toFixed(1)+'" y="'+tagTextY+'" font-size="'+tagFs+'" fill="#fff" text-anchor="middle" font-weight="700">'+label+'</text>';
         }
       } else {
         const today = this.getToday();
@@ -2391,7 +2396,7 @@ const App = {
 
       const m = parseInt(c.startDate.slice(5,7));
       const d = parseInt(c.startDate.slice(8,10));
-      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-fsY(26))+'" font-size="'+fs(14)+'" fill="#444" text-anchor="middle" font-weight="600">'+m+'.'+d+'</text>';
+      xLabels += '<text x="'+cx.toFixed(1)+'" y="'+(H-fsY(22))+'" font-size="'+fs(14)+'" fill="#444" text-anchor="middle" font-weight="600">'+m+'.'+d+'</text>';
     });
 
     // X轴基线
