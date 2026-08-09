@@ -1216,11 +1216,11 @@ const App = {
     if (this.periodData.length === 0 && this.isSample) {
       this.loadSamplePeriods();
     }
-    // 数据版本：v2=用户真实数据，覆盖旧v1示例
+    // 数据版本：v3=用户2026-08-09最新真实数据（2024-03 ~ 2026-05，19条），覆盖旧v1/v2
     const meta2 = JSON.parse(localStorage.getItem(this.KEYS.meta) || '{}');
-    if (meta2.periodDataVersion !== 2) {
+    if (meta2.periodDataVersion !== 3) {
       this.loadSamplePeriods();
-      localStorage.setItem(this.KEYS.meta, JSON.stringify(Object.assign(meta2, { isSample: this.isSample, periodDataVersion: 2 })));
+      localStorage.setItem(this.KEYS.meta, JSON.stringify(Object.assign(meta2, { isSample: this.isSample, periodDataVersion: 3 })));
     }
   },
 
