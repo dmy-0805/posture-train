@@ -1732,7 +1732,11 @@ const App = {
   _updateInspSaveBtn() {
     const saveBtn = document.getElementById('inspSaveBtn');
     const content = document.getElementById('inspContentInput').value.trim();
-    const hasContent = content.length > 0 || this._inspPendingImgs.length > 0 || (this._inspPendingTags && this._inspPendingTags.length > 0);
+    const tagInputVal = (document.getElementById('inspTagInput')?.value || '').trim();
+    const hasContent = content.length > 0
+      || this._inspPendingImgs.length > 0
+      || (this._inspPendingTags && this._inspPendingTags.length > 0)
+      || tagInputVal.length > 0;
     saveBtn.disabled = !hasContent;
     saveBtn.style.opacity = hasContent ? '1' : '.5';
   },
@@ -3366,6 +3370,7 @@ const App = {
     document.getElementById('inspTagInput').onkeydown = (e) => {
       if (e.key === 'Enter') { e.preventDefault(); this._addPendingInspTag(); }
     };
+    document.getElementById('inspTagInput').oninput = () => this._updateInspSaveBtn();
 
     // 提交
     document.getElementById('bodySubmit').onclick = () => this.addBodyData();
