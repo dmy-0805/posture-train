@@ -1827,6 +1827,17 @@ const App = {
   },
 
   saveInspiration() {
+    // 自动收集输入框里还没点添加的标签
+    const tagInput = document.getElementById('inspTagInput');
+    if (tagInput) {
+      const pending = tagInput.value.trim();
+      if (pending) {
+        if (!this._inspPendingTags) this._inspPendingTags = [];
+        if (!this._inspPendingTags.includes(pending) && this._inspPendingTags.length < 5) {
+          this._inspPendingTags.push(pending);
+        }
+      }
+    }
     const content = document.getElementById('inspContentInput').value.trim();
     const imgs = this._inspPendingImgs.slice();
     const tags = (this._inspPendingTags || []).slice();
