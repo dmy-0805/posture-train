@@ -735,6 +735,53 @@ body{
   font-size:24px;cursor:pointer;background:transparent;transition:all .15s;
 }
 .insp-preview-add:hover{border-color:var(--primary);color:var(--primary)}
+/* 灵感标签 */
+.insp-tag-section{margin-top:12px}
+.insp-tag-label{font-size:13px;color:var(--text-2);font-weight:500;margin-bottom:6px}
+.insp-tag-input-row{display:flex;gap:8px}
+.insp-tag-input-row input{
+  flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;
+  font-size:14px;font-family:inherit;outline:none;background:#fff;color:var(--text);
+  transition:border-color .15s;min-width:0;
+}
+.insp-tag-input-row input:focus{border-color:var(--primary)}
+.insp-tag-add-btn{
+  padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  cursor:pointer;font-size:13px;font-weight:500;color:var(--text-2);font-family:inherit;
+  transition:all .15s;flex-shrink:0;
+}
+.insp-tag-add-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.insp-tag-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:0}
+.insp-tag-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--bg);border:1px solid var(--border);border-radius:20px;
+  padding:4px 10px;font-size:12px;color:var(--text-2);font-weight:500;
+}
+.insp-tag-chip .insp-tag-remove{
+  cursor:pointer;color:var(--text-3);font-size:14px;line-height:1;margin-left:2px;
+}
+.insp-tag-chip .insp-tag-remove:hover{color:var(--danger)}
+/* 灵感筛选标签栏 */
+.insp-tag-filter{
+  display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;
+}
+.insp-tag-filter:empty{display:none}
+.insp-filter-chip{
+  display:inline-flex;align-items:center;
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:6px 14px;font-size:13px;font-weight:500;color:var(--text-2);
+  cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;
+}
+.insp-filter-chip:hover{border-color:var(--primary);color:var(--text)}
+.insp-filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.insp-filter-chip .insp-filter-count{font-size:11px;opacity:.7;margin-left:4px}
+/* 卡片内标签 */
+.insp-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.insp-card-tag{
+  background:var(--bg);border-radius:4px;padding:2px 8px;
+  font-size:11px;color:var(--text-2);font-weight:500;cursor:pointer;transition:all .15s;
+}
+.insp-card-tag:hover{background:var(--primary);color:#fff}
 @media(max-width:480px){
   .books-tab{padding:8px 14px;font-size:14px}
   .book-card{padding:12px}
@@ -1078,6 +1125,7 @@ body{
         发布
       </button>
     </div>
+    <div id="inspTagFilter" class="insp-tag-filter"></div>
     <div id="inspirationList"></div>
   </section>
 
@@ -1089,12 +1137,20 @@ body{
         <button class="icon-btn" id="inspCancelBtn" style="padding:6px 12px">取消</button>
       </div>
       <textarea id="inspContentInput" placeholder="记录此刻的灵感..." rows="5" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:15px;outline:none;resize:none;font-family:inherit;line-height:1.6;box-sizing:border-box"></textarea>
+      <div class="insp-tag-section">
+        <div class="insp-tag-label">标签</div>
+        <div class="insp-tag-input-row">
+          <input type="text" id="inspTagInput" placeholder="输入标签后回车添加" maxlength="10">
+          <button id="inspTagAddBtn" class="insp-tag-add-btn">添加</button>
+        </div>
+        <div id="inspTagPreview" class="insp-tag-preview"></div>
+      </div>
       <div id="inspPreview" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
         <label style="display:flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;color:var(--text-2);font-size:13px">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           添加图片
-          <input type="file" id="inspImgInput" accept="image/*" multiple capture="environment" hidden>
+          <input type="file" id="inspImgInput" accept="image/*" multiple hidden>
         </label>
         <button id="inspSaveBtn" disabled style="padding:8px 20px;background:#111;color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;opacity:.5;transition:opacity .15s">发布</button>
       </div>
@@ -1570,7 +1626,31 @@ const App = {
   renderInspiration() {
     const list = document.getElementById('inspirationList');
     const countEl = document.getElementById('inspirationCount');
+    const filterEl = document.getElementById('inspTagFilter');
     if (!list) return;
+
+    // 收集所有标签及计数
+    const tagMap = {};
+    this.inspirationData.forEach(item => {
+      if (item.tags && item.tags.length) {
+        item.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; });
+      }
+    });
+    const allTags = Object.keys(tagMap).sort((a, b) => tagMap[b] - tagMap[a]);
+
+    // 渲染筛选栏
+    if (filterEl) {
+      if (allTags.length === 0) {
+        filterEl.innerHTML = '';
+      } else {
+        let filterHtml = '<button class="insp-filter-chip' + (!this._inspFilterTag ? ' active' : '') + '" onclick="App.filterInspByTag(null)">全部<span class="insp-filter-count">' + this.inspirationData.length + '</span></button>';
+        allTags.forEach(t => {
+          filterHtml += '<button class="insp-filter-chip' + (this._inspFilterTag === t ? ' active' : '') + '" onclick="App.filterInspByTag(\'' + this.escapeHtml(t).replace(/'/g, "\\'") + '\')">' + this.escapeHtml(t) + '<span class="insp-filter-count">' + tagMap[t] + '</span></button>';
+        });
+        filterEl.innerHTML = filterHtml;
+      }
+    }
+
     if (countEl) countEl.textContent = this.inspirationData.length + ' 条灵感';
 
     if (this.inspirationData.length === 0) {
@@ -1582,7 +1662,17 @@ const App = {
       return;
     }
 
-    const sorted = this.inspirationData.slice().sort((a, b) => b.createdAt - a.createdAt);
+    let filtered = this.inspirationData.slice();
+    if (this._inspFilterTag) {
+      filtered = filtered.filter(item => item.tags && item.tags.includes(this._inspFilterTag));
+    }
+    const sorted = filtered.sort((a, b) => b.createdAt - a.createdAt);
+
+    if (sorted.length === 0) {
+      list.innerHTML = '<div class="insp-empty"><div class="insp-empty-text">没有标签为「' + this.escapeHtml(this._inspFilterTag) + '」的灵感</div></div>';
+      return;
+    }
+
     list.innerHTML = sorted.map(item => {
       const content = item.content ? '<div class="insp-content">' + this.escapeHtml(item.content) + '</div>' : '';
       let imgsHtml = '';
@@ -1591,7 +1681,12 @@ const App = {
         const imgs = item.images.map(src => '<img class="insp-img" src="' + src + '" onclick="App.viewInspImg(this.src)" alt="">').join('');
         imgsHtml = '<div class="insp-imgs c' + n + '">' + imgs + '</div>';
       }
+      let tagsHtml = '';
+      if (item.tags && item.tags.length) {
+        tagsHtml = '<div class="insp-card-tags">' + item.tags.map(t => '<span class="insp-card-tag" onclick="App.filterInspByTag(\'' + this.escapeHtml(t).replace(/'/g, "\\'") + '\')">' + this.escapeHtml(t) + '</span>').join('') + '</div>';
+      }
       return '<div class="insp-card">' +
+        tagsHtml +
         content +
         imgsHtml +
         '<div class="insp-footer">' +
@@ -1602,6 +1697,50 @@ const App = {
     }).join('');
   },
 
+  filterInspByTag(tag) {
+    this._inspFilterTag = (this._inspFilterTag === tag) ? null : (tag || null);
+    this.renderInspiration();
+  },
+
+  _renderInspTags() {
+    const preview = document.getElementById('inspTagPreview');
+    if (!preview) return;
+    if (!this._inspPendingTags || this._inspPendingTags.length === 0) {
+      preview.innerHTML = '';
+      return;
+    }
+    preview.innerHTML = this._inspPendingTags.map((t, idx) =>
+      '<span class="insp-tag-chip">' + this.escapeHtml(t) + '<span class="insp-tag-remove" onclick="App._removePendingInspTag(' + idx + ')">×</span></span>'
+    ).join('');
+  },
+
+  _addPendingInspTag() {
+    const input = document.getElementById('inspTagInput');
+    const val = input.value.trim();
+    if (!val) return;
+    if (!this._inspPendingTags) this._inspPendingTags = [];
+    if (this._inspPendingTags.includes(val)) { this.toast('标签已存在'); return; }
+    if (this._inspPendingTags.length >= 5) { this.toast('最多 5 个标签'); return; }
+    this._inspPendingTags.push(val);
+    input.value = '';
+    this._renderInspTags();
+    this._updateInspSaveBtn();
+  },
+
+  _removePendingInspTag(idx) {
+    this._inspPendingTags.splice(idx, 1);
+    this._renderInspTags();
+    this._updateInspSaveBtn();
+  },
+
+  _updateInspSaveBtn() {
+    const saveBtn = document.getElementById('inspSaveBtn');
+    const content = document.getElementById('inspContentInput').value.trim();
+    const hasContent = content.length > 0 || this._inspPendingImgs.length > 0 || (this._inspPendingTags && this._inspPendingTags.length > 0);
+    saveBtn.disabled = !hasContent;
+    saveBtn.style.opacity = hasContent ? '1' : '.5';
+  },
+
   viewInspImg(src) {
     const w = window.open('');
     if (w) { w.document.write('<img src="' + src + '" style="max-width:100%;display:block;margin:auto">'); }
@@ -1609,8 +1748,11 @@ const App = {
 
   openInspModal() {
     document.getElementById('inspContentInput').value = '';
+    document.getElementById('inspTagInput').value = '';
     this._inspPendingImgs = [];
+    this._inspPendingTags = [];
     this._renderInspPreview();
+    this._renderInspTags();
     document.getElementById('inspModalOverlay').style.display = 'flex';
     document.getElementById('inspModalOverlay').style.alignItems = 'flex-end';
     setTimeout(() => document.getElementById('inspContentInput').focus(), 50);
@@ -1622,11 +1764,7 @@ const App = {
 
   _renderInspPreview() {
     const preview = document.getElementById('inspPreview');
-    const saveBtn = document.getElementById('inspSaveBtn');
-    const content = document.getElementById('inspContentInput').value.trim();
-    const hasContent = content.length > 0 || this._inspPendingImgs.length > 0;
-    saveBtn.disabled = !hasContent;
-    saveBtn.style.opacity = hasContent ? '1' : '.5';
+    this._updateInspSaveBtn();
     if (!preview) return;
 
     let html = this._inspPendingImgs.map((src, idx) =>
@@ -1695,12 +1833,14 @@ const App = {
   saveInspiration() {
     const content = document.getElementById('inspContentInput').value.trim();
     const imgs = this._inspPendingImgs.slice();
-    if (!content && imgs.length === 0) { this.toast('写点什么或加张图吧'); return; }
+    const tags = (this._inspPendingTags || []).slice();
+    if (!content && imgs.length === 0 && tags.length === 0) { this.toast('写点什么或加张图吧'); return; }
 
     this.inspirationData.push({
       id: this.uid(),
       content: content,
       images: imgs,
+      tags: tags,
       createdAt: Date.now()
     });
     this.saveInspirations();
@@ -3214,6 +3354,10 @@ const App = {
     document.getElementById('inspImgInput').onchange = (e) => {
       this._handleInspImgInput(e.target.files);
       e.target.value = '';
+    };
+    document.getElementById('inspTagAddBtn').onclick = () => this._addPendingInspTag();
+    document.getElementById('inspTagInput').onkeydown = (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); this._addPendingInspTag(); }
     };
 
     // 提交
