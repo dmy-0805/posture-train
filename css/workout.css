@@ -1,0 +1,152 @@
+/* 锻炼台：训练计划、打卡、历史计划、训练日历、录入模态框 */
+/* 训练计划 */
+/* 训练计划卡片 - 紧凑布局 */
+.plan-day{background:var(--card);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);transition:all .2s}
+.plan-day.today{border-color:var(--primary);border-width:2px;background:#fafafa}
+.plan-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:nowrap;gap:8px}
+.plan-day-label{display:flex;align-items:center;gap:8px;flex:1;min-width:0;overflow:hidden}
+.day-badge{background:var(--bg);border-radius:6px;padding:3px 10px;font-size:13px;font-weight:600;color:var(--text-2);white-space:nowrap;flex-shrink:0}
+.plan-day.today .day-badge{background:var(--primary);color:#fff}
+.plan-day-title{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plan-duration{font-size:12px;color:var(--text-3);white-space:nowrap;flex-shrink:0;background:var(--bg);padding:3px 8px;border-radius:6px}
+/* 视频区域 - 紧凑行内链接 */
+.plan-video-info{font-size:12px;color:var(--text-3);margin:6px 0 0;line-height:1.5}
+.plan-video-wrapper{
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  padding:7px 12px;border-radius:var(--radius-sm);background:var(--bg);
+  color:var(--text-2);font-size:13px;margin-top:8px;cursor:pointer;transition:all .15s;
+  border:1px solid var(--border);font-weight:500;
+}
+.plan-video-wrapper:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.plan-video-wrapper .play-icon{width:14px;height:14px;flex-shrink:0}
+.plan-video-wrapper .video-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(300px,55vw)}
+/* 计划卡片：防止header内元素撑破布局 */
+.plan-day-header .plan-action-btn{flex-shrink:0}
+/* 旧大图样式隐藏 */
+.plan-video-cover{display:none}
+.plan-exercises{margin:10px 0}
+.plan-exercise-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px;min-width:0}
+.plan-exercise-item:last-child{border-bottom:none}
+.plan-exercise-name{font-weight:500;flex-shrink:1;min-width:0;word-break:break-word}
+.plan-exercise-detail{color:var(--text-2);text-align:right;font-size:13px;flex-shrink:0}
+.plan-focus{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;color:#92400e;display:flex;align-items:flex-start;gap:6px;margin-top:8px}
+.plan-focus:empty{display:none}
+.plan-rest{color:var(--text-3);font-size:14px;padding:4px 0}
+.habits-section{background:var(--card);border-radius:var(--radius);padding:16px;margin-top:16px;box-shadow:var(--shadow)}
+.habits-list{list-style:none;margin-top:10px}
+.habits-list li{padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-2);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.habits-list li:last-child{border-bottom:none}
+.habits-num{background:var(--primary);color:#fff;border-radius:50%;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.today-plan-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:8px;background:#f5f5f5;border:1px solid var(--border)}
+.today-plan-day{background:var(--primary);color:#fff;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600;flex-shrink:0}
+.today-plan-info{flex:1;min-width:0}
+.today-plan-title{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.today-plan-meta{font-size:12px;color:var(--text-3)}
+.today-plan-actions{display:flex;gap:6px;flex-shrink:0}
+.plan-action-btn{border:none;border-radius:6px;padding:8px 12px;font-size:12px;cursor:pointer;font-family:inherit;min-height:36px;white-space:nowrap}
+.plan-action-btn.video{background:var(--primary);color:#fff}
+.plan-action-btn.detail{background:#fff;color:var(--text-2);border:1px solid var(--border)}
+/* 今天勾选框 */
+.today-checkin{
+  width:22px;height:22px;border:2px solid var(--border-2);border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;background:#fff;flex-shrink:0;
+}
+.today-checkin.checked{background:var(--success);border-color:var(--success)}
+.today-checkin.locked{cursor:not-allowed;opacity:.4}
+.today-checkin svg{opacity:0;transition:opacity .15s}
+.today-checkin.checked svg{opacity:1}
+.today-plan-card.checked .today-plan-day,
+.today-plan-card.checked .today-plan-info .today-plan-title,
+.today-plan-card.checked .today-plan-info .today-plan-meta{
+  text-decoration:line-through;opacity:.55;
+}
+/* 录入新计划按钮 */
+.plan-input-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;padding:12px;border:1px dashed var(--border-2);border-radius:var(--radius);
+  background:var(--card);color:var(--text-2);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all .15s;font-family:inherit;margin-bottom:16px;
+}
+.plan-input-btn:hover{background:var(--bg);border-color:var(--primary);color:var(--text)}
+/* 历史计划 */
+.history-section{margin-top:8px}
+.history-toggle{
+  display:flex;align-items:center;gap:6px;width:100%;padding:12px;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  cursor:pointer;font-size:14px;font-weight:500;color:var(--text-2);
+  font-family:inherit;transition:all .15s;
+}
+.history-toggle:hover{background:var(--bg)}
+.history-toggle .arrow{transition:transform .2s;margin-left:auto}
+.history-toggle.open .arrow{transform:rotate(90deg)}
+.history-body{display:none;margin-top:8px}
+.history-body.open{display:block}
+.history-item{
+  background:var(--card);border-radius:var(--radius-sm);padding:12px 14px;
+  margin-bottom:8px;border:1px solid var(--border);
+}
+.history-item-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.history-item-time{font-size:13px;color:var(--text-2);font-weight:500}
+.history-restore-btn{
+  border:1px solid var(--border-2);background:#fff;color:var(--text-2);
+  border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;
+  font-family:inherit;transition:all .15s;
+}
+.history-restore-btn:hover{border-color:var(--primary);color:var(--text)}
+.history-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
+.history-detail.open{display:block}
+.history-day-row{padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.history-day-row:last-child{border-bottom:none}
+.history-day-name{display:inline-block;background:var(--bg);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--text-2);margin-right:6px}
+.history-day-title{color:var(--text)}
+.history-empty{text-align:center;padding:20px;color:var(--text-3);font-size:13px}
+/* 训练日历 */
+.calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;min-width:0}
+.calendar-nav{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-2);font-size:16px;flex-shrink:0;
+}
+.calendar-nav:hover{background:var(--bg)}
+.calendar-title{font-size:16px;font-weight:600;text-align:center;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.calendar-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
+  background:var(--card);border-radius:var(--radius);padding:8px;box-shadow:var(--shadow);
+  width:100%;min-width:0;
+}
+.calendar-weekday{text-align:center;font-size:12px;color:var(--text-3);padding:6px 0;font-weight:500;min-width:0}
+.calendar-cell{
+  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:6px;font-size:13px;color:var(--text);background:var(--bg);cursor:pointer;
+  transition:all .15s;position:relative;min-height:0;min-width:0;overflow:hidden;
+}
+.calendar-cell:hover{background:var(--border)}
+.calendar-cell.other-month{color:var(--text-3);opacity:.4;cursor:default}
+.calendar-cell.other-month:hover{background:var(--bg)}
+.calendar-cell.today{border:2px solid var(--primary)}
+.calendar-cell.completed{background:var(--success);color:#fff}
+.calendar-cell.completed:hover{background:#16a34a}
+.calendar-cell .cell-dot{width:4px;height:4px;border-radius:50%;background:var(--success);margin-top:2px}
+.calendar-cell.completed .cell-dot{background:#fff}
+.calendar-cell.selected{box-shadow:0 0 0 2px var(--primary) inset}
+.calendar-detail{
+  background:var(--card);border-radius:var(--radius);padding:14px;margin-top:12px;
+  box-shadow:var(--shadow);display:none;
+}
+.calendar-detail.show{display:block}
+.calendar-detail-title{font-size:14px;font-weight:600;margin-bottom:8px}
+.calendar-detail-empty{color:var(--text-3);font-size:13px;text-align:center;padding:12px 0}
+/* 录入模态框 */
+.plan-input-modal{max-width:480px;width:100%}
+.plan-input-textarea{
+  width:100%;min-height:240px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:13px;font-family:monospace;background:#fff;color:var(--text);outline:none;resize:vertical;
+  line-height:1.6;
+}
+.plan-input-textarea:focus{border-color:var(--primary)}
+.plan-input-format-toggle{
+  margin-top:8px;font-size:12px;color:var(--primary);cursor:pointer;font-family:inherit;
+}
+.plan-input-format-hint{display:none;margin-top:6px;white-space:pre-wrap;line-height:1.6;font-size:12px;color:var(--text-3);background:var(--bg);padding:10px;border-radius:6px}
+.plan-input-format-hint.open{display:block}

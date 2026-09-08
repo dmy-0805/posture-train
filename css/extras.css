@@ -1,0 +1,127 @@
+/* 想买的书 + 灵感记录 */
+  /* 习惯列表收缩 */
+  .habits-list li{font-size:13px;line-height:1.45;gap:8px}
+  .habits-num{min-width:18px;height:18px;font-size:10px}
+  /* 防止 today plan card 超出 */
+  .today-plan-card{flex-wrap:wrap}
+  .today-plan-info{min-width:0;flex:1 1 150px}
+  .plan-action-btn{padding:6px 10px;font-size:11px;min-height:30px}
+}
+/* 想买的书 */
+.books-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.books-tabs{display:flex;gap:0;border-bottom:2px solid var(--border)}
+.books-tab{
+  padding:8px 20px;border:none;background:transparent;cursor:pointer;
+  font-size:15px;font-weight:600;color:var(--text-3);font-family:inherit;
+  border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;
+}
+.books-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.books-tab span{font-size:13px;font-weight:400;opacity:.7}
+.book-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+  transition:border-color .15s;
+}
+.book-card:hover{border-color:var(--border-2)}
+.book-info{flex:1;min-width:0}
+.book-title{font-size:15px;font-weight:600;line-height:1.4}
+.book-author{font-size:13px;color:var(--text-3);margin-top:2px}
+.book-note{font-size:13px;color:var(--text-2);margin-top:4px;line-height:1.5}
+.book-actions{display:flex;gap:6px;flex-shrink:0}
+.book-action-btn{
+  padding:6px 12px;border:1px solid var(--border);background:var(--card);
+  border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;
+  color:var(--text-2);font-family:inherit;transition:all .15s;white-space:nowrap;
+}
+.book-action-btn:hover{background:var(--bg)}
+.book-action-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.book-action-btn.primary:hover{background:var(--primary-hover)}
+.book-action-btn.danger{color:var(--danger);border-color:var(--danger)}
+.book-action-btn.danger:hover{background:var(--danger-bg)}
+.book-empty{text-align:center;padding:40px 20px;color:var(--text-3);font-size:14px}
+.modal-card{background:#fff;border-radius:var(--radius);padding:20px;max-width:400px;width:100%}
+/* 灵感记录 */
+.insp-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px;margin-bottom:12px;
+}
+.insp-content{font-size:15px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word}
+.insp-imgs{display:grid;gap:8px;margin-top:12px}
+.insp-imgs.c1{grid-template-columns:1fr}
+.insp-imgs.c2{grid-template-columns:repeat(2,1fr)}
+.insp-imgs.c3{grid-template-columns:repeat(3,1fr)}
+.insp-img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;background:#f5f5f5;
+  cursor:pointer;transition:transform .15s;
+}
+.insp-img:hover{transform:scale(1.01)}
+.insp-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.insp-time{font-size:12px;color:var(--text-3)}
+.insp-del{
+  border:none;background:transparent;color:var(--text-3);cursor:pointer;
+  font-size:12px;padding:4px 8px;border-radius:6px;font-family:inherit;transition:all .15s;
+}
+.insp-del:hover{background:var(--danger-bg);color:var(--danger)}
+.insp-empty{text-align:center;padding:60px 20px}
+.insp-empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
+.insp-empty-text{color:var(--text-3);font-size:14px;line-height:1.7}
+.insp-preview-item{position:relative;aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#f5f5f5}
+.insp-preview-item img{width:100%;height:100%;object-fit:cover}
+.insp-preview-remove{
+  position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;
+  background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;
+}
+.insp-preview-add{
+  aspect-ratio:1/1;border:1.5px dashed var(--border);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:var(--text-3);
+  font-size:24px;cursor:pointer;background:transparent;transition:all .15s;
+}
+.insp-preview-add:hover{border-color:var(--primary);color:var(--primary)}
+/* 灵感标签 */
+.insp-tag-section{margin-top:12px}
+.insp-tag-label{font-size:13px;color:var(--text-2);font-weight:500;margin-bottom:6px}
+.insp-tag-input-row{display:flex;gap:8px}
+.insp-tag-input-row input{
+  flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;
+  font-size:14px;font-family:inherit;outline:none;background:#fff;color:var(--text);
+  transition:border-color .15s;min-width:0;
+}
+.insp-tag-input-row input:focus{border-color:var(--primary)}
+.insp-tag-add-btn{
+  padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  cursor:pointer;font-size:13px;font-weight:500;color:var(--text-2);font-family:inherit;
+  transition:all .15s;flex-shrink:0;
+}
+.insp-tag-add-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.insp-tag-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:0}
+.insp-tag-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--bg);border:1px solid var(--border);border-radius:20px;
+  padding:4px 10px;font-size:12px;color:var(--text-2);font-weight:500;
+}
+.insp-tag-chip .insp-tag-remove{
+  cursor:pointer;color:var(--text-3);font-size:14px;line-height:1;margin-left:2px;
+}
+.insp-tag-chip .insp-tag-remove:hover{color:var(--danger)}
+/* 灵感筛选标签栏 */
+.insp-tag-filter{
+  display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;
+}
+.insp-tag-filter:empty{display:none}
+.insp-filter-chip{
+  display:inline-flex;align-items:center;
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:6px 14px;font-size:13px;font-weight:500;color:var(--text-2);
+  cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;
+}
+.insp-filter-chip:hover{border-color:var(--primary);color:var(--text)}
+.insp-filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.insp-filter-chip .insp-filter-count{font-size:11px;opacity:.7;margin-left:4px}
+/* 卡片内标签 */
+.insp-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.insp-card-tag{
+  background:var(--bg);border-radius:4px;padding:2px 8px;
+  font-size:11px;color:var(--text-2);font-weight:500;cursor:pointer;transition:all .15s;
+}
+.insp-card-tag:hover{background:var(--primary);color:#fff}
